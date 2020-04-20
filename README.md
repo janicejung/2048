@@ -1,4 +1,6 @@
 # cs3110-project
 hello
+hi
+hehe
 
-This is our project
+chicken nugget
