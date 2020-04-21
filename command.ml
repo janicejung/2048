@@ -1,6 +1,26 @@
+type command =
+  | Left
+  | Right
+  | Up
+  | Down
+  | Quit
+
+exception Malformed
+exception Empty
+
+let parse str = 
+  let lst = str |> String.split_on_char ' ' |> List.filter (fun x -> x <> "") in
+  match lst with
+  | [] -> raise (Empty)
+  | "w"::t when t = [] -> Up
+  | "a"::t when t = [] -> Left
+  | "s"::t when t = [] -> Down
+  | "d"::t when t = [] -> Right
+  | "quit"::t when t = [] -> Quit
+  | _ -> raise (Malformed)
+
 let rec fill_rest n list =
   if List.length list <> n then fill_rest n (0::list) else list
-
 
 let combine_left list n acc =
   let rec helper list n acc was_same =
@@ -15,7 +35,7 @@ let combine_left list n acc =
       end in List.rev (helper (List.filter (fun x -> x <> 0) list) 4 [] false)
 
 let combine_right list n acc = 
-  combine_left list n acc |> List.rev
+  combine_left (List.rev list) n acc |> List.rev
 
 let move_left board =
   List.map (fun row -> combine_left row 4 []) board
@@ -31,7 +51,7 @@ let rec transpose board =
     (hh::(List.map List.hd t))::(transpose (ht::(List.map List.tl t)))
 
 let move_up board =
-  board |> transpose |> move_right |> transpose
+  board |> transpose |> move_left |> transpose
 
 let move_down board =
-  board |> transpose |> move_left |> transpose
+  board |> transpose |> move_right |> transpose
