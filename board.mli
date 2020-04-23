@@ -21,3 +21,5 @@ val gen_random_num: int
 val have_lost_row: int list -> bool
 
 val have_lost: int list list -> bool
+
+val compare_board: int list list -> int list list -> bool

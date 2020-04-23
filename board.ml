@@ -98,3 +98,15 @@ let rec have_lost board =
   not (List.mem false (List.map have_lost_row board)) && 
   not (List.mem false (List.map have_lost_row (transpose board)))
 
+let rec compare_list l1 l2 =
+  match l1, l2 with
+  | [], [] -> true
+  | h1::t1, h2::t2 -> if h1 = h2 then compare_list t1 t2 else false
+  | _ -> false
+
+let rec compare_board b1 b2 = 
+  match b1, b2 with
+  | [], [] -> true
+  | h1::t1, h2::t2 ->
+    if compare_list h1 h2 then compare_board t1 t2 else false
+  | _ -> false
