@@ -9,10 +9,10 @@ let make_board n =
   board_helper n n []
 
 let print_helper length number =
-  (if length = 1 then (print_int number; print_string "    ";)
-   else if length = 2 then (print_int number; print_string "   ";)
-   else if length = 3 then (print_int number; print_string "  ";)
-   else (print_int number; print_string " ";))
+  (if length = 1 then (print_int number; print_string "    | ";)
+   else if length = 2 then (print_int number; print_string "   | ";)
+   else if length = 3 then (print_int number; print_string "  | ";)
+   else (print_int number; print_string " | ";))
 
 let rec print_board board =
   let rec print_row row =
@@ -22,7 +22,7 @@ let rec print_board board =
       print_row t
   in match board with
   | [] -> ()
-  | h::t -> (print_row h; print_endline ""; print_board t;)
+  | h::t -> (print_row h; print_endline "\n---------------------------"; print_board t;)
 
 let rec board_full board = 
   match board with

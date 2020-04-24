@@ -1,11 +1,11 @@
-MODULES=board command main 
+MODULES=board command main authors
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
-# TEST=test.byte
+TEST=test.byte
 MAIN=main.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind
-PKGS=oUnit ANSITerminal
+PKGS=oUnit
 
 default: build
 	utop
@@ -13,8 +13,8 @@ default: build
 build:
 	$(OCAMLBUILD) $(OBJECTS)
 
-# test:
-# 	$(OCAMLBUILD) -tag 'debug' $(TEST) && ./$(TEST)
+test:
+	$(OCAMLBUILD) -tag 'debug' $(TEST) && ./$(TEST)
 
 play:
 	$(OCAMLBUILD) $(MAIN) && ./$(MAIN)
@@ -26,8 +26,8 @@ play:
 # 	bash checkzip.sh
 # 	bash finalcheck.sh
 
-# zip:
-# 	zip game.zip *.ml* _tags Makefile
+zip:
+	zip game.zip *.ml* *.txt* _tags Makefile
 	
 # docs: docs-public docs-private
 	

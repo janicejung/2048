@@ -1,5 +1,4 @@
 
-
 val make_board : int -> int list list 
 
 val print_board: int list list -> unit 
