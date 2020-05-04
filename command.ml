@@ -22,7 +22,7 @@ let parse str =
 let rec fill_rest n list =
   if List.length list <> n then fill_rest n (0::list) else list
 
-let combine_left list n acc =
+let combine_left_board list n acc  =
   let rec helper list n acc was_same =
     match list with
     | [] -> fill_rest n acc
@@ -34,11 +34,25 @@ let combine_left list n acc =
           else helper t n (h::acc) false
       end in List.rev (helper (List.filter (fun x -> x <> 0) list) 4 [] false)
 
+let combine_left_score list n acc =
+  let rec helper list n acc was_same =
+    match list with
+    | [] -> acc
+    | h::t -> if was_same then helper t n acc false else begin
+        match t with
+        | [] -> acc
+        | h'::t' ->
+          if h = h' then helper t n (h + h'+ acc) true 
+          else helper t n acc false
+      end in helper (List.filter (fun x -> x <> 0) list) 4 acc false
+
 let combine_right list n acc = 
   combine_left (List.rev list) n acc |> List.rev
 
-let move_left board =
-  List.map (fun row -> combine_left row 4 []) board
+let move_left state =
+  let new_board = List.map (fun row -> combine_left_board row 4 []) state.board in 
+  let new_scores = List.map (fun row -> combine_left_score row 4 0) state.board in  
+  let new_score = List.fold_left (+) state.score new_scores 
 
 let move_right board = 
   List.map (fun row -> combine_right row 4 []) board
