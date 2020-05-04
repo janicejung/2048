@@ -1,9 +1,16 @@
 
-val make_board : int -> int list list 
+type t = {
+  board: int list list;
+  score:int;
+}
 
-val print_board: int list list -> unit 
+val make_board: int -> t
 
-val board_full : int list list -> bool
+val print_board: int list list -> unit
+
+val print_score: int -> unit
+
+val board_full: int list list -> bool
 
 val row_empty_tiles: int list -> int -> int list -> int list
 
@@ -13,7 +20,7 @@ val gen_random_tile: int list list -> (int * int)
 
 val place_num_in_row: int list -> int -> int -> int list
 
-val place_random_tile: int -> int list list -> int list list
+val place_random_tile: int -> t -> t
 
 val gen_random_num: int
 

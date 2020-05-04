@@ -1,3 +1,5 @@
+open Board
+
 type command =
   | Left
   | Right
@@ -34,7 +36,7 @@ let combine_left_board list n acc  =
           else helper t n (h::acc) false
       end in List.rev (helper (List.filter (fun x -> x <> 0) list) 4 [] false)
 
-let combine_left_score list n acc =
+let combine_score list n acc =
   let rec helper list n acc was_same =
     match list with
     | [] -> acc
@@ -46,16 +48,24 @@ let combine_left_score list n acc =
           else helper t n acc false
       end in helper (List.filter (fun x -> x <> 0) list) 4 acc false
 
-let combine_right list n acc = 
-  combine_left (List.rev list) n acc |> List.rev
+let combine_right_board list n acc = 
+  combine_left_board (List.rev list) n acc |> List.rev
 
-let move_left state =
-  let new_board = List.map (fun row -> combine_left_board row 4 []) state.board in 
-  let new_scores = List.map (fun row -> combine_left_score row 4 0) state.board in  
-  let new_score = List.fold_left (+) state.score new_scores 
+let move_left (state:Board.t) =
+  let new_board =
+    List.map (fun row -> combine_left_board row 4 []) state.board in 
+  let new_score_list =
+    List.map (fun row -> combine_score row 4 0) state.board in  
+  let new_score = List.fold_left (+) state.score new_score_list in
+  {board = new_board; score = new_score}
 
-let move_right board = 
-  List.map (fun row -> combine_right row 4 []) board
+let move_right (state:Board.t) = 
+  let new_board =
+    List.map (fun row -> combine_right_board row 4 []) state.board in 
+  let new_score_list =
+    List.map (fun row -> combine_score row 4 0) state.board in  
+  let new_score = List.fold_left (+) state.score new_score_list in
+  {board = new_board; score = new_score}
 
 let rec transpose board =
   match board with
@@ -64,8 +74,16 @@ let rec transpose board =
   | (hh::ht)::t ->
     (hh::(List.map List.hd t))::(transpose (ht::(List.map List.tl t)))
 
-let move_up board =
-  board |> transpose |> move_left |> transpose
+let move_up (state:Board.t) =
+  let board1 = state.board |> transpose in 
+  let transpose_state = {state with board = board1} in 
+  let after_move_state = move_left transpose_state in 
+  let board2 = after_move_state.board |> transpose in 
+  {after_move_state with board = board2}
 
-let move_down board =
-  board |> transpose |> move_right |> transpose
+let move_down (state:Board.t) =
+  let board1 = state.board |> transpose in 
+  let transpose_state = {state with board = board1} in 
+  let after_move_state = move_right transpose_state in 
+  let board2 = after_move_state.board |> transpose in 
+  {after_move_state with board = board2}

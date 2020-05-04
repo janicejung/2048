@@ -115,10 +115,17 @@ let rec have_lost_row list =
       | h'::t' -> if h = h' then false else have_lost_row t
     end
 
+let rec transpose board =
+  match board with
+  | [] -> []
+  | []::t -> transpose t
+  | (hh::ht)::t ->
+    (hh::(List.map List.hd t))::(transpose (ht::(List.map List.tl t)))
+
 (** [have_lost board] checks to see if any combinations can be made in [board]*)
 let rec have_lost board =
-  not (List.mem false (List.map have_lost_row board)) && 
-  not (List.mem false (List.map have_lost_row (Command.transpose board)))
+  not (List.mem false (List.map have_lost_row board)) &&
+  not (List.mem false (List.map have_lost_row (transpose board)))
 
 (** [compare_list l1 l2] is if the elements of [l1] and [l2]*)
 let rec compare_list l1 l2 =
