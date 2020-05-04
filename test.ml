@@ -40,20 +40,33 @@ let test = [
   "test_get_empty_tiles" >:: (fun _ -> 
       assert_equal (get_empty_tiles 3 [[5;0;10];[0;0;0];[0;1;0]]) [[1];[0;1;2];[0;2]];);
 
-  (** place_random_tile_helper tests*)
-
-
-  (** place_random_tile_helper tests*)
-
+  (** place_num_in_row tests*)
+  "test_place_num_in_row" >:: (fun _ -> 
+      assert_equal (place_num_in_row [1;1] 1 2) [1;2];);
+  "test_place_num_in_row" >:: (fun _ -> 
+      assert_equal (place_num_in_row [1;1;2;3] 2 100) [1;1;100;3];);
 
   (** have_lost_row tests*)
-
+  "test_have_lost_row" >:: (fun _ -> 
+      assert_equal (have_lost_row [1;1;2;3]) false;);
+  "test_have_lost_row" >:: (fun _ -> 
+      assert_equal (have_lost_row [1;2;1;3]) true;);
+  "test_have_lost_row" >:: (fun _ -> 
+      assert_equal (have_lost_row [1;1;1;1]) false;);
+  "test_have_lost_row" >:: (fun _ -> 
+      assert_equal (have_lost_row [1]) true;);
 
   (** transpose tests*)
-
+  "test_transpose" >:: (fun _ -> 
+      assert_equal (transpose [[1;2;3];[4;5;6];[7;8;9]]) [[1;4;7];[2;5;8];[3;6;9]];);
+  "test_transpose" >:: (fun _ -> 
+      assert_equal (transpose [[1;2;3;10];[4;5;6;0];[7;8;9;99];[0;0;0;0]]) [[1;4;7;0];[2;5;8;0];[3;6;9;0];[10;0;99;0]];);
 
   (** have_lost tests*)
-
+  "test_have_lost" >:: (fun _ -> 
+      assert_equal (have_lost [[1;2;3];[4;5;6];[7;8;9]]) true;);
+  "test_have_lost" >:: (fun _ -> 
+      assert_equal (have_lost [[1;2;3];[4;5;6];[7;8;0]]) false;);
 
 
   (** compare_board tests*)
@@ -66,7 +79,10 @@ let test = [
 
 
   (** fill_rest tests*)
-
+  "test_fill_rest" >:: (fun _ -> 
+      assert_equal (fill_rest 4 []) [0;0;0;0]);
+  "test_fill_rest" >:: (fun _ -> 
+      assert_equal (fill_rest 2 [1;1]) [1;1]);
 
   (** combine_score tests*)
 

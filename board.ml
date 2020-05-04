@@ -105,7 +105,8 @@ let place_random_tile n state =
                 (state.board |> get_empty_tiles n |> gen_random_tile
                  |> place_random_tile_helper state.board new_num)}
 
-(** [have_lost_row list] checks to see if there are duplicates in [list]*)
+(** [have_lost_row list] checks to see if there are duplicates in [list].
+    Returns true if no dups. *)
 let rec have_lost_row list =
   match list with
   | [] -> true
@@ -124,6 +125,7 @@ let rec transpose board =
 
 (** [have_lost board] checks to see if any combinations can be made in [board]*)
 let rec have_lost board =
+  board_full board &&
   not (List.mem false (List.map have_lost_row board)) &&
   not (List.mem false (List.map have_lost_row (transpose board)))
 
