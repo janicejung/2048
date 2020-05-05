@@ -4,6 +4,7 @@ type t =
   (* | Shuffle  *)
   | DoubleNum
   (* | RemoveTile *)
+(* | RemoveRandomTile *)
 
 
 (* let shuffle board = 
