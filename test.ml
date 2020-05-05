@@ -100,7 +100,10 @@ let test = [
 
 
   (** move_up tests*)
-
+  "test_fill_rest" >:: (fun _ -> 
+      assert_equal (move_up {board = [[0;2;4;8];[2;4;4;8];[0;0;2;0];[2;0;2;0]];
+                             score = 8}) 
+        {board = [[4;2;8;16];[0;4;4;0];[0;0;0;0];[0;0;0;0]]; score = 40});
 
   (** move_down tests*)
 ]
