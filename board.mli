@@ -2,6 +2,7 @@
 type t = {
   board: int list list;
   score:int;
+  moves:int;
 }
 
 val make_board: int -> t
@@ -21,6 +22,8 @@ val gen_random_tile: int list list -> (int * int)
 val place_num_in_row: int list -> int -> int -> int list
 
 val place_random_tile: int -> t -> t
+
+val place_random_powerup: int -> t -> t
 
 val gen_random_num: int
 

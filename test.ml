@@ -1,6 +1,7 @@
 open OUnit
 open Board
 open Command
+open Powerup
 
 let tboard = make_board 4
 
@@ -94,18 +95,45 @@ let test = [
 
 
   (** move_left tests*)
-
+  "test_fill_rest" >:: (fun _ -> 
+      assert_equal (move_left {board = [[4;2;8;16];[0;4;4;0];[0;0;0;0];[0;0;0;0]];
+                               score = 0}) 
+        {board = [[4;2;8;16];[8;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 8});
+  "test_fill_rest" >:: (fun _ -> 
+      assert_equal (move_left {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
+                               score = 0}) 
+        {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0});
 
   (** move_right tests*)
-
+  "test_fill_rest" >:: (fun _ -> 
+      assert_equal (move_right {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
+                                score = 0}) 
+        {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0});
 
   (** move_up tests*)
   "test_fill_rest" >:: (fun _ -> 
       assert_equal (move_up {board = [[0;2;4;8];[2;4;4;8];[0;0;2;0];[2;0;2;0]];
                              score = 8}) 
         {board = [[4;2;8;16];[0;4;4;0];[0;0;0;0];[0;0;0;0]]; score = 40});
+  "test_fill_rest" >:: (fun _ -> 
+      assert_equal (move_up {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
+                             score = 0}) 
+        {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0});
 
   (** move_down tests*)
+  "test_fill_rest" >:: (fun _ -> 
+      assert_equal (move_down {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
+                               score = 0}) 
+        {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0});
+
+
+  (** double_num tests*)
+  "test_fill_rest" >:: (fun _ -> 
+      assert_equal (double_num [[0;2;4;8];[2;4;4;8];[0;0;2;0];[2;0;2;0]]) 
+        [[0;4;8;16];[4;8;8;16];[0;0;4;0];[4;0;4;0]]);
+  "test_fill_rest" >:: (fun _ -> 
+      assert_equal (double_num [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
+        [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]);
 ]
 
 let suite = "testing suite" >::: test

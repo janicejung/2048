@@ -1,6 +1,7 @@
 type t = {
   board: int list list;
   score: int;
+  moves: int;
 }
 
 (** [make_board n] initializes an int list list of size n x n and a score of 0*)
@@ -10,7 +11,7 @@ let make_board n =
       if n = 0 then acc else make_row (n-1) (0::acc) in 
     if inc = 0 then acc
     else board_helper (num) (inc-1) ((make_row num [])::acc) in
-  {board = board_helper n n []; score= 0}
+  {board = board_helper n n []; score= 0; moves = 0}
 
 let print_helper length number =
   (if length = 1 then (print_int number; print_string "    | ";)
@@ -97,6 +98,10 @@ let gen_random_num =
   else if chance >= 60 && chance < 96 then 4
   else 8
 
+let gen_random_powerup = 
+  let chance = Random.int 100 in 
+  if chance < 100 then 3 else 5
+
 (** [place_random_tile n state] places the number [n] on the board in the
     [state] with a randomly generated number*)
 let place_random_tile n state =
@@ -104,6 +109,13 @@ let place_random_tile n state =
   {state with board =
                 (state.board |> get_empty_tiles n |> gen_random_tile
                  |> place_random_tile_helper state.board new_num)}
+
+
+let place_random_powerup n state =
+  let new_powerup = gen_random_powerup in
+  {state with board =
+                (state.board |> get_empty_tiles n |> gen_random_tile
+                 |> place_random_tile_helper state.board new_powerup)}
 
 (** [have_lost_row list] checks to see if there are duplicates in [list].
     Returns true if no dups. *)

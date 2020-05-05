@@ -1,15 +1,25 @@
 open Board
 open Command
 
+let spawn_powerup n state =
+  let chance = Random.int 100  in 
+  if state.moves > 5 && chance < 100 then 
+    let new_board = place_random_powerup n state in
+    {new_board with moves = 0} 
+  else state
+
 (** [new_board_helper] takes in a move function and an entire state to update 
     the board after a user moves left, right, up or down. *) 
 let new_board_helper f n (state:Board.t) =
   let new_board = f state in 
   let tile_board = place_random_tile n new_board in
+
   if compare_board state.board new_board.board then new_board
-  else if board_full tile_board.board then if have_lost tile_board.board then
+  else if board_full tile_board.board then 
+    if have_lost tile_board.board then
       (print_board tile_board.board; print_endline "You lost :("; exit 0)
-    else tile_board else tile_board
+    else {tile_board with moves = tile_board.moves + 1}
+  else spawn_powerup n {tile_board with moves = tile_board.moves + 1}
 
 (** [play_game] is a read-eval-print-loop (REPL) that reads the user
     input, parses the input, and determines where the user will go next and if 
