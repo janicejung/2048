@@ -98,14 +98,13 @@ let gen_random_num =
   else if chance >= 60 && chance < 96 then 4
   else 8
 
-let gen_random_powerup = 11
-
-(* let chance = Random.int 100 in
-   if chance <= 30 then 3
-   else if chance > 30 && chance <= 40 then 5
-   else if chance > 40 && chance <= 60 then 7
-   else if chance > 60 && chance <= 80 then 11
-   else 13 *)
+let gen_random_powerup =
+  let chance = Random.int 100 in
+  if chance <= 30 then 3
+  else if chance > 30 && chance <= 40 then 5
+  else if chance > 40 && chance <= 60 then 7
+  else if chance > 60 && chance <= 80 then 11
+  else 13
 
 (** [place_random_tile n state] places the number [n] on the board in the
     [state] with a randomly generated number*)

@@ -163,6 +163,17 @@ let test = [
   "test_get_coord_list" >:: (fun _ -> 
       assert_equal true (compare_list [[1,2];[0,0];[9;2]] *)
 
+  (** half_num tests *)  
+  "test_half_num" >:: (fun _ -> 
+      assert_equal true 
+        (compare_board (half_num [[0;2;4;8];[2;4;4;8];[0;0;2;0];[2;0;2;0]]) 
+           [[0;2;4;8];[2;4;4;8];[0;0;2;0];[2;0;2;0]]));
+  "test_half_num1" >:: (fun _ -> 
+      assert_equal true 
+        (compare_board(half_num [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
+           [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]));
+
+
 
 
 ]
