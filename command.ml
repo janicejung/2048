@@ -87,7 +87,8 @@ let move_left (state:Board.t) =
     List.map (fun row -> combine_score row 4 0) state.board in  
   let new_score = List.fold_left (+) state.score new_score_list in
   let powerup_board = {state with board = new_board; score = new_score} in
-  Powerup.activate_powerup powerup_board powerup
+  if powerup = 0 then powerup_board else
+    Powerup.activate_powerup powerup_board powerup
 
 let move_right (state:Board.t) = 
   let powerup = get_powerup_right state.board in
@@ -97,7 +98,8 @@ let move_right (state:Board.t) =
     List.map (fun row -> combine_score row 4 0) state.board in  
   let new_score = List.fold_left (+) state.score new_score_list in
   let powerup_board = {state with board = new_board; score = new_score} in
-  Powerup.activate_powerup powerup_board powerup
+  if powerup = 0 then powerup_board else
+    Powerup.activate_powerup powerup_board powerup
 
 let rec transpose board =
   match board with

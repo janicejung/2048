@@ -99,8 +99,12 @@ let gen_random_num =
   else 8
 
 let gen_random_powerup = 
-  let chance = Random.int 100 in 
-  if chance < 100 then 3 else 5
+  let chance = Random.int 100 in
+  if chance <= 30 then 3
+  else if chance > 30 && chance <= 40 then 5
+  else if chance > 40 && chance <= 60 then 7
+  else if chance > 60 && chance <= 80 then 11
+  else 13
 
 (** [place_random_tile n state] places the number [n] on the board in the
     [state] with a randomly generated number*)
@@ -110,12 +114,16 @@ let place_random_tile n state =
                 (state.board |> get_empty_tiles n |> gen_random_tile
                  |> place_random_tile_helper state.board new_num)}
 
-
 let place_random_powerup n state =
   let new_powerup = gen_random_powerup in
   {state with board =
                 (state.board |> get_empty_tiles n |> gen_random_tile
                  |> place_random_tile_helper state.board new_powerup)}
+
+
+let place_chosen_tile num n board =
+  board |> get_empty_tiles n |> gen_random_tile
+  |> place_random_tile_helper board num
 
 (** [have_lost_row list] checks to see if there are duplicates in [list].
     Returns true if no dups. *)

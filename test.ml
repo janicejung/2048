@@ -5,17 +5,25 @@ open Powerup
 
 let tboard = make_board 4
 
+let compare_state s1 s2 =
+  compare_board s1.board s2.board && s1.score = s2.score && s1.moves = s2.moves
+
 let test = [
   (** make_board tests*)
   "test_make_board" >:: (fun _ -> 
-      assert_equal (make_board 4) ({board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
-                                    score = 0}));
+      assert_equal true
+        (compare_state (make_board 4) 
+           ({board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
+             score = 0; moves = 0};)));
   "test_make_board" >:: (fun _ -> 
-      assert_equal (make_board 2) ({board = [[0;0];[0;0]];
-                                    score = 0}));
+      assert_equal true
+        (compare_state (make_board 2)
+           ({board = [[0;0];[0;0]]; score = 0; moves = 0};)));
+
   "test_make_board" >:: (fun _ -> 
-      assert_equal (make_board 3) ({board = [[0;0;0];[0;0;0];[0;0;0]];
-                                    score = 0}));
+      assert_equal true 
+        (compare_state (make_board 3) 
+           ({board = [[0;0;0];[0;0;0];[0;0;0]];score = 0; moves = 0};)));
 
   (** board_full tests*)
   "test_board_full" >:: (fun _ -> 
@@ -95,45 +103,54 @@ let test = [
 
 
   (** move_left tests*)
-  "test_fill_rest" >:: (fun _ -> 
-      assert_equal (move_left {board = [[4;2;8;16];[0;4;4;0];[0;0;0;0];[0;0;0;0]];
-                               score = 0}) 
-        {board = [[4;2;8;16];[8;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 8});
-  "test_fill_rest" >:: (fun _ -> 
-      assert_equal (move_left {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
-                               score = 0}) 
-        {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0});
+  "test_move_left1" >:: (fun _ -> 
+      assert_equal true 
+        (compare_state 
+           (move_left {board = [[4;2;8;16];[0;4;4;0];[0;0;0;0];[0;0;0;0]];
+                       score = 0; moves = 0})
+           {board = [[4;2;8;16];[8;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 8; moves = 0}));
+  "test_move_left2" >:: (fun _ -> 
+      assert_equal true 
+        (compare_state (move_left {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
+                                   score = 0; moves = 0}) 
+           {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0; moves = 0}));
 
   (** move_right tests*)
-  "test_fill_rest" >:: (fun _ -> 
-      assert_equal (move_right {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
-                                score = 0}) 
-        {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0});
+  "test_move_right1" >:: (fun _ -> 
+      assert_equal true 
+        (compare_state (move_right {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
+                                    score = 0; moves = 1}) 
+           {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0; moves = 1}));
 
   (** move_up tests*)
-  "test_fill_rest" >:: (fun _ -> 
-      assert_equal (move_up {board = [[0;2;4;8];[2;4;4;8];[0;0;2;0];[2;0;2;0]];
-                             score = 8}) 
-        {board = [[4;2;8;16];[0;4;4;0];[0;0;0;0];[0;0;0;0]]; score = 40});
-  "test_fill_rest" >:: (fun _ -> 
-      assert_equal (move_up {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
-                             score = 0}) 
-        {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0});
+  "test_move_up1" >:: (fun _ -> 
+      assert_equal true 
+        (compare_state 
+           (move_up {board = [[0;2;4;8];[2;4;4;8];[0;0;2;0];[2;0;2;0]];
+                     score = 8; moves = 0}) 
+           {board = [[4;2;8;16];[0;4;4;0];[0;0;0;0];[0;0;0;0]]; score = 40; moves = 0}));
+  "test_move_up2" >:: (fun _ -> 
+      assert_equal true 
+        (compare_state (move_up {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
+                                 score = 0; moves = 0}) 
+           {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0; moves = 0}));
 
   (** move_down tests*)
-  "test_fill_rest" >:: (fun _ -> 
-      assert_equal (move_down {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
-                               score = 0}) 
-        {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0});
+  "test_move_down1" >:: (fun _ -> 
+      assert_equal true (compare_state
+                           (move_down {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]];
+                                       score = 0; moves = 0}) 
+                           {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; score = 0; moves = 0}));
 
 
   (** double_num tests*)
-  "test_fill_rest" >:: (fun _ -> 
-      assert_equal (double_num [[0;2;4;8];[2;4;4;8];[0;0;2;0];[2;0;2;0]]) 
-        [[0;4;8;16];[4;8;8;16];[0;0;4;0];[4;0;4;0]]);
-  "test_fill_rest" >:: (fun _ -> 
-      assert_equal (double_num [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
-        [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]);
+  "test_double_num" >:: (fun _ -> 
+      assert_equal true 
+        (compare_board (double_num [[0;2;4;8];[2;4;4;8];[0;0;2;0];[2;0;2;0]]) 
+           [[0;4;8;16];[4;8;8;16];[0;0;4;0];[4;0;4;0]]));
+  "test_double_num" >:: (fun _ -> 
+      assert_equal true (compare_board(double_num [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
+                           [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]));
 ]
 
 let suite = "testing suite" >::: test
