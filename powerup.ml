@@ -52,5 +52,5 @@ let activate_powerup state powerup =
   | 5 -> { state with board = half_num state.board}
   | 7 -> { state with board = sort_row state.board}
   | 11 -> { state with board = shuffle state.board}
-  | 13 -> {state with board = remove_random_tile state.board}
+  | 13 -> { state with board = remove_random_tile state.board}
   | _-> failwith "not a valid powerup"

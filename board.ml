@@ -39,7 +39,7 @@ let rec board_full board =
   | h::t -> if List.mem 0 h then false else board_full t
 
 (** [row_empty_tiles row n acc] is a list of indices in [row] where the value
-    is 0*)
+    is 0. *)
 let rec row_empty_tiles (row:int list) (n:int) (acc:int list) = 
   if n < 0 then acc
   else if List.nth row n <> 0 then row_empty_tiles row (n-1) acc 
@@ -98,13 +98,14 @@ let gen_random_num =
   else if chance >= 60 && chance < 96 then 4
   else 8
 
-let gen_random_powerup = 
-  let chance = Random.int 100 in
-  if chance <= 30 then 3
-  else if chance > 30 && chance <= 40 then 5
-  else if chance > 40 && chance <= 60 then 7
-  else if chance > 60 && chance <= 80 then 11
-  else 13
+let gen_random_powerup = 11
+
+(* let chance = Random.int 100 in
+   if chance <= 30 then 3
+   else if chance > 30 && chance <= 40 then 5
+   else if chance > 40 && chance <= 60 then 7
+   else if chance > 60 && chance <= 80 then 11
+   else 13 *)
 
 (** [place_random_tile n state] places the number [n] on the board in the
     [state] with a randomly generated number*)

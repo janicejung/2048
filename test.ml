@@ -5,6 +5,12 @@ open Powerup
 
 let tboard = make_board 4
 
+let rec compare_list l1 l2 = 
+  match l1, l2 with 
+  | h::t , h'::t' -> if h = h' then compare_list t t' else false
+  | [], [] -> true
+  | _ -> false
+
 let compare_state s1 s2 =
   compare_board s1.board s2.board && s1.score = s2.score && s1.moves = s2.moves
 
@@ -151,6 +157,14 @@ let test = [
   "test_double_num" >:: (fun _ -> 
       assert_equal true (compare_board(double_num [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
                            [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]));
+
+  (* 
+  (** double_num tests*)
+  "test_get_coord_list" >:: (fun _ -> 
+      assert_equal true (compare_list [[1,2];[0,0];[9;2]] *)
+
+
+
 ]
 
 let suite = "testing suite" >::: test
