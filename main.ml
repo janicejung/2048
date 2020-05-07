@@ -1,5 +1,6 @@
 open Board
 open Command
+open Interface
 
 let spawn_powerup n state =
   let chance = Random.int 100  in 
@@ -25,6 +26,7 @@ let new_board_helper f n (state:Board.t) =
     input, parses the input, and determines where the user will go next and if 
     their input was valid *)  
 let rec play_game n (state:Board.t) = 
+  start_screen ();
   print_board state.board; print_score state.score;
   match parse (read_line ()) with
   | Left -> play_game n (new_board_helper move_left n state)
