@@ -12,6 +12,7 @@ open Graphics
    2048: EED22E
    empty tile: RGB (238,228,218,0.35)
    tile border: 776E65 *)
+
 let update_screen (board : Board.t) : unit = 
   clear_graph();
   set_color (rgb 119 110 101);

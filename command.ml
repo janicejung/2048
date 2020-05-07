@@ -34,7 +34,8 @@ let combine_score list n acc =
         | h'::t' ->
           if h = h' then helper t n (h + h'+ acc) true 
           else helper t n acc false
-      end in helper (List.filter (fun x -> x <> 0 && x mod 2 = 0) list) 4 acc false
+      end 
+  in helper (List.filter (fun x -> x <> 0 && x mod 2 = 0) list) 4 acc false
 
 let combine_left_board list n acc  =
   let rec helper list n acc was_same =
@@ -47,8 +48,9 @@ let combine_left_board list n acc  =
           | h'::t' ->
             if h = h' then helper t n ((h+h')::acc) true 
             else helper t n (h::acc) false
-        end in 
-  List.rev (helper (List.filter (fun x -> x <> 0 && x mod 2 = 0) list) 4 [] false)
+        end 
+  in List.rev 
+    (helper (List.filter (fun x -> x <> 0 && x mod 2 = 0) list) 4 [] false)
 
 let combine_right_board list n acc = 
   combine_left_board (List.rev list) n acc |> List.rev
