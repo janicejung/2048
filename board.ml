@@ -92,14 +92,15 @@ let place_random_tile_helper board (num:int) ((x,y):int*int) =
   helper board x y 0 []
 
 (** [gen_random_num] generates a random 2, 4, or 8 to be placed on the board*)
-let gen_random_num = 
+let gen_random_num () = 
   let chance = Random.int 100 in
   if chance < 60 then 2
   else if chance >= 60 && chance < 96 then 4
   else 8
 
-let gen_random_powerup =
+let gen_random_powerup () =
   let chance = Random.int 100 in
+  print_endline (string_of_int chance);
   if chance <= 30 then 3
   else if chance > 30 && chance <= 40 then 5
   else if chance > 40 && chance <= 60 then 7
@@ -109,13 +110,13 @@ let gen_random_powerup =
 (** [place_random_tile n state] places the number [n] on the board in the
     [state] with a randomly generated number*)
 let place_random_tile n state =
-  let new_num = gen_random_num in
+  let new_num = gen_random_num () in
   {state with board =
                 (state.board |> get_empty_tiles n |> gen_random_tile
                  |> place_random_tile_helper state.board new_num)}
 
 let place_random_powerup n state =
-  let new_powerup = gen_random_powerup in
+  let new_powerup = gen_random_powerup () in
   {state with board =
                 (state.board |> get_empty_tiles n |> gen_random_tile
                  |> place_random_tile_helper state.board new_powerup)}

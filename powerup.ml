@@ -41,7 +41,9 @@ let remove_random_tile board =
   let coord_list = get_coord_list n board in 
   let random = Random.int (List.length coord_list) in
   let random_coord = List.nth coord_list random in 
-  place_random_tile_helper board 0 random_coord
+  match random_coord with 
+  | (x, y) -> print_endline(string_of_int x^ ", " ^string_of_int y);
+    place_random_tile_helper board 0 random_coord
 
 let sort_row board =
   List.map (fun row -> List.rev (List.sort compare row)) board
