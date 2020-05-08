@@ -48,14 +48,20 @@ let new_board_helper f n (state:Board.t) =
 let rec play_game n (state:Board.t) theme = 
   update_screen state theme;
   print_board state.board; print_score state.score;
-  let status = wait_next_event [Key_pressed] in
-  match status.key with
-  | 'w' -> play_game n (new_board_helper move_up n state) theme
-  | 'a' -> play_game n (new_board_helper move_left n state) theme
-  | 's' -> play_game n (new_board_helper move_down n state) theme
-  | 'd' -> play_game n (new_board_helper move_right n state) theme
-  | 'q' -> exit 0
-  | _ -> play_game n state theme
+  let status = wait_next_event [Key_pressed; Button_down] in
+  if status.keypressed then
+    match status.key with
+    | 'w' -> play_game n (new_board_helper move_up n state) theme
+    | 'a' -> play_game n (new_board_helper move_left n state) theme
+    | 's' -> play_game n (new_board_helper move_down n state) theme
+    | 'd' -> play_game n (new_board_helper move_right n state) theme
+    | _ -> play_game n state theme
+  else if status.button then
+    if (status.mouse_x<77) && (status.mouse_x>=17) && 
+       (status.mouse_y< 70 ) && (status.mouse_y>= 50) then exit 0 
+    else play_game n state theme
+  else play_game n state theme
+
 (* match parse (read_line ()) with
    | Left -> play_game n (new_board_helper move_left n state) theme
    | Right -> play_game n (new_board_helper move_right n state) theme

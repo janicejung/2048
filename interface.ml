@@ -92,21 +92,32 @@ let center_text s y =
       draw_string s;
   end
 
-let rec init_game_screen () theme: unit = 
-  begin
-    clear_graph ();
-    let boardx = size_x()/2 - 200 in 
-    let boardy = size_y()/2 - 200 in 
-    make_back_board boardx boardy 400 theme;
-    draw_row boardx (boardy+291) 85 12 [512;1024;128;32] theme;
-    draw_row boardx (boardy+194) 85 12 [64;128;8;2048] theme;
-    draw_row boardx (boardy+97) 85 12 [256;0;8;16] theme;
-    draw_row boardx boardy 85 12 [2;0;4;4] theme;
-  end
+let draw_score int x = 
+  set_color (black);
+  let (scorex, _) = text_size "Score:" in 
+  moveto (x + (60 - scorex)/2) 375;
+  draw_string "Score:";
+  moveto x 350;
+  set_color(black);
+  fill_rect x 350 60 20;
+  set_color (white);
+  let (numx, numy) = text_size (string_of_int int) in 
+  moveto (x + (60 - numx)/2) (350 + (20 - numy)/2);
+  draw_string (string_of_int int)
+
+let draw_quit_button () =
+  set_color (rgb 246 124 95); 
+  fill_rect 17 50 60 20;
+  let (quitx, quity) = text_size ("Quit") in
+  moveto (17 + (60 - quitx)/2) (50+(20-quity)/2);
+  set_color (black);
+  draw_string "Quit"
 
 let update_screen (state : Board.t) (theme: color_theme) : unit = 
   begin
     clear_graph ();
+    draw_score state.score 17; 
+    draw_quit_button ();
     let boardx = size_x()/2 - 200 in 
     let boardy = size_y()/2 - 200 in 
     make_back_board boardx boardy 400 theme;
@@ -146,66 +157,6 @@ let start_screen () : unit =
 
 
 
-(* draw_rect (250, 250, 50, 50);
-   auto_synchronize false;
-   clear_graph ();
-   synchronize ();
 
-   let x_max = size_x () in
-   let y_max = size_y () in
-
-   let orange = rgb 198 141 62 in
-   set_color orange;
-
-   (* Draw ellipse with top left corner (x,y) and width and height *)
-   let fe = fun x y w h ->
-   let y = y_max - y in
-   fill_ellipse (x + (w / 2)) (y - (h / 2)) (w / 2) (h / 2)
-   in
-
-   (* Draw polygon using top left corner as origin *)
-   let fp = fun arr ->
-   fill_poly (Array.map (fun (x, y) -> (x, y_max - y)) arr)
-   in
-
-   fe 185 90 250 147; (* main body *)
-   fe 269 54 68 98; (* left hump *)
-   fe 143 138 127 94; (* torso *)
-
-   set_color white;
-   fe 89 (-79) 195 227; (* clipping *)
-
-   set_color orange;
-   fe 134 93 62 122; (* neck *)
-   fe 97 101 86 47; (* head *)
-   fe 354 63 68 118; (* right hump *)
-   fe 367 101 98 109; (* rump *)
-   fe 247 176 68 94; (* shoulders *)
-
-   let front_legs = [|
-   (256, 246); (249, 287); (251, 343); (264, 346); (266, 306); (276, 276);
-   (282, 306); (278, 343); (292, 343); (298, 306); (298, 277); (299, 254);
-   (255, 246)
-   |] in fp front_legs;
-
-   let back_legs = [|
-   (432, 243); (441, 289); (430, 334); (445, 334); (462, 275); (469, 328);
-   (476, 328); (478, 259); (454, 214); (461, 164); (407, 206)
-   |] in fp back_legs;
-
-   (* move the cursor and draw the text *)
-   moveto 200 40;
-   set_color black;
-   draw_string "Bactrian the Double-Humped OCaml";
-
-   synchronize ();
-
-   (* loop forever *)
-   let rec loop () : unit =
-   let _ =
-    wait_next_event [Mouse_motion; Button_down; Button_up; Key_pressed] in
-   loop ()
-   in
-   loop () *)
 
 
