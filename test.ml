@@ -192,7 +192,8 @@ let test = [
 
   "test_remove_num" >:: (fun _ -> 
       assert_equal true 
-        (compare_board (remove_random_tile [[0;0;4;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
+        (compare_board (remove_random_tile 
+                          [[0;0;4;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
            [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]));
 ]
 

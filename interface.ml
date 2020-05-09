@@ -168,7 +168,8 @@ let lose_screen (state: Board.t) theme : unit =
 
   (* draws play again button *)
   set_color (rgb 180 200 120); 
-  fill_rect (size_x()/2 + 210) (size_y()/2 - button_height/2) button_length button_height;
+  fill_rect (size_x()/2 + 210) (size_y()/2 - button_height/2) 
+    button_length button_height;
   set_color (white);
   let (play_length, play_height) = text_size "Play Again" in
   moveto (250 + (size_x()/2 - play_length/2)) (size_y()/2 - play_height/2); 
@@ -182,7 +183,8 @@ let theme_screen () : unit =
   let padding = 20 in
   (* blue theme *)
   set_color blue;
-  fill_rect (size_x()/2-button_height/2) (size_y()/2+padding/2) button_height button_height;
+  fill_rect (size_x()/2-button_height/2) (size_y()/2+padding/2) 
+    button_height button_height;
 
   (* default theme *)
   set_color yellow; 
@@ -191,19 +193,23 @@ let theme_screen () : unit =
 
   (* pastel theme *)
   set_color green;
-  fill_rect (size_x()/2+padding+button_height/2) (size_y()/2 + padding/2) button_height button_height;
+  fill_rect (size_x()/2+padding+button_height/2) (size_y()/2 + padding/2) 
+    button_height button_height;
 
   (* dark mode theme *)
   set_color black;
-  fill_rect (size_x()/2-button_height/2) (size_y()/2-padding/2-button_height) button_height button_height;
+  fill_rect (size_x()/2-button_height/2) (size_y()/2-padding/2-button_height) 
+    button_height button_height;
 
   (* rainbow theme *)
   set_color yellow;
-  fill_rect (size_x()/2-button_height-padding-button_height/2)  (size_y()/2-padding/2-button_height) button_height button_height;
+  fill_rect (size_x()/2-button_height-padding-button_height/2)  
+    (size_y()/2-padding/2-button_height) button_height button_height;
 
   (* 3110 theme? *)
   set_color red;
-  fill_rect (size_x()/2+padding+button_height/2) (size_y()/2 - padding/2-button_height) button_height button_height;
+  fill_rect (size_x()/2+padding+button_height/2) 
+    (size_y()/2 - padding/2-button_height) button_height button_height;
 
 
 
