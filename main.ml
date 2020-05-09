@@ -216,7 +216,7 @@ and choose_theme powerup highscore=
           (status.mouse_y >= (size_y()/2-padding/2-button_height))
   then main rainbow_theme powerup highscore
 
-  (* CS Theme *)
+  (* Challenge Theme *)
   else if (status.mouse_x<size_x()/2+padding+button_height/2+100) && 
           status.mouse_x>=(size_x()/2+padding+button_height/2) && 
           (status.mouse_y< size_y()/2 - padding/2-button_height+100) && 

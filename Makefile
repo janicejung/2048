@@ -7,25 +7,6 @@ MAIN=main.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind
 PKGS=oUnit graphics
 
-
-# INSTALL_ARGS := $(if $(PREFIX),--prefix $(PREFIX),)
-
-# default:
-# 	dune build
-
-# install:
-# 	dune install $(INSTALL_ARGS)
-
-# uninstall:
-# 	dune uninstall $(INSTALL_ARGS)
-
-# reinstall: uninstall install
-
-# clean:
-# 	dune clean
-
-# .PHONY: default install uninstall reinstall clean
-
 default: build
 	utop
 
@@ -48,18 +29,18 @@ play:
 zip:
 	zip game.zip *.ml* *.txt* _tags Makefile
 
-# docs: docs-public docs-private
+docs: docs-public docs-private
 
-# docs-public: build
-# 	mkdir -p doc.public
-# 	ocamlfind ocamldoc -I _build -package yojson,ANSITerminal \
-# 		-html -stars -d doc.public $(MLIS)
+docs-public: build
+	mkdir -p doc.public
+	ocamlfind ocamldoc -I _build -package graphics \
+		-html -stars -d doc.public $(MLIS)
 
-# docs-private: build
-# 	mkdir -p doc.private
-# 	ocamlfind ocamldoc -I _build -package yojson,ANSITerminal \
-# 		-html -stars -d doc.private \
-# 		-inv-merge-ml-mli -m A $(MLIS) $(MLS)
+docs-private: build
+	mkdir -p doc.private
+	ocamlfind ocamldoc -I _build -package graphics \
+		-html -stars -d doc.private \
+		-inv-merge-ml-mli -m A $(MLIS) $(MLS)
 
 clean:
 	ocamlbuild -clean
