@@ -21,6 +21,8 @@ val start_screen : color_theme -> bool -> unit
 
 val lose_screen : Board.t -> color_theme -> unit
 
-val update_screen : Board.t -> color_theme -> unit
+val update_screen : Board.t -> color_theme -> int -> unit
 
 val theme_screen : unit -> unit
+
+val win_message : Board.t -> color_theme -> int -> unit

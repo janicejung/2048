@@ -36,4 +36,6 @@ val have_lost_row: int list -> bool
 
 val have_lost: int list list -> bool
 
+val have_won: int list list -> bool
+
 val compare_board: int list list -> int list list -> bool

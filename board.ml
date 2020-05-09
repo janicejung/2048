@@ -151,6 +151,11 @@ let rec have_lost board =
   not (List.mem false (List.map have_lost_row board)) &&
   not (List.mem false (List.map have_lost_row (transpose board)))
 
+(** [have_won board] checks if there is a 2048 on the board. *)
+let have_won board = 
+  let bool_lst = List.map (fun row -> List.mem 2048 row) board in 
+  List.mem true bool_lst
+
 (** [compare_list l1 l2] is if the elements of [l1] and [l2]*)
 let rec compare_list l1 l2 =
   match l1, l2 with

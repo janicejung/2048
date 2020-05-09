@@ -1,18 +1,5 @@
 open Graphics 
-(* Original Game Theme
-   2:EEE4DA: 238 228 218 ; FONT: 776E65: 119 110 101
-   4: EDE0C8: 237 224 200; FONT: 776E65
-   8: F2B179: 242 177 121; FONT: F9F6F2: 249 246 242
-   16: F59563: 245 149 99; FONT: F9F6F2
-   32: 567C5F: 246 124 95; FONT: same as 16
-   64: f65e3b 246 94 59 156 203 255
-   128: EDCF72 237 207 114
-   256: EDCC61 237 204 97
-   512: EDC850 237 200 80
-   1024: EDC53F 237 197 63
-   2048: EED22E 238 210 46
-   empty tile: 205 193 181
-   tile border: 776E65 119 110 101*)
+
 type color_theme = {
   text1: Graphics.color;
   text2: Graphics.color;
@@ -58,16 +45,29 @@ let set_font_color theme n =
   | n when n = 2 || n =4 -> set_color(theme.text1)
   | _ -> set_color (theme.text2)
 
+
+let draw_num_helper x y tile_width padding_width str = 
+  let (length, height) = text_size str in 
+  moveto (x + padding_width + (tile_width/2) - length/2)
+    (y + padding_width + (tile_width/2) - (height/2));
+  draw_string str
+
 (** [draw_num x y tile_width padding_width n theme] draws the number [n] on
     the tile at [(x,y)] with the [tile_width] and [padding_width] according
     to the [theme]. *)
 let draw_num x y tile_width padding_width n theme = 
   set_font_color theme n;
-  let str = string_of_int n in 
-  let (length, height) = text_size str in 
-  moveto (x + padding_width + (tile_width/2) - length/2)
-    (y + padding_width + (tile_width/2) - (height/2));
-  draw_string str
+  if n mod 2 <> 0 then
+    match n with 
+    | 3 -> draw_num_helper x y tile_width padding_width "Double"
+    | 5 -> draw_num_helper x y tile_width padding_width "Half"
+    | 7 -> draw_num_helper x y tile_width padding_width "Sort"
+    | 11 -> draw_num_helper x y tile_width padding_width "Shuffle"
+    | 13 -> draw_num_helper x y tile_width padding_width "Remove"
+    | _-> failwith "not a powerup"
+  else
+    let str = string_of_int n in 
+    draw_num_helper x y tile_width padding_width str
 
 (** [draw_row x y tile_width padding_width lst theme] draws the tiles in the
     row according to the numbers in [lst] with the colors in [theme] at
@@ -114,6 +114,20 @@ let draw_score int x =
   moveto (x + (60 - numx)/2) (350 + (20 - numy)/2);
   draw_string (string_of_int int)
 
+(** [draw_score int x] draws the score, [int], at location [x] on the screen. *)
+let draw_high_score int x = 
+  set_color (black);
+  let (scorex, _) = text_size "High Score:" in 
+  moveto (x + (60 - scorex)/2) 325;
+  draw_string "High Score:";
+  moveto x 300;
+  set_color(black);
+  fill_rect x 300 60 20;
+  set_color (white);
+  let (numx, numy) = text_size (string_of_int int) in 
+  moveto (x + (60 - numx)/2) (300 + (20 - numy)/2);
+  if int = 0 then draw_string "" else draw_string (string_of_int int)
+
 (** [draw_quit_button ()] draws a quit button on the screen. *)
 let draw_quit_button () =
   set_color (rgb 246 124 95); 
@@ -125,10 +139,11 @@ let draw_quit_button () =
 
 (** [update_screen state theme] draws the new board and score according to
     [state] and [theme]. *)
-let update_screen (state : Board.t) (theme: color_theme): unit = 
+let update_screen (state : Board.t) (theme: color_theme) highscore : unit = 
   begin
     clear_graph ();
     draw_score state.score 17; 
+    draw_high_score highscore 17;
     draw_quit_button ();
     let boardx = size_x()/2 - 200 in 
     let boardy = size_y()/2 - 200 in 
@@ -160,6 +175,15 @@ let draw_start_message theme : unit =
   moveto (two_x+60) 320;
   draw_string "8"
 
+(** [draw_start_button theme rect_x rect_y] draws the start button according
+    to [theme] at location of [rect_x] and [rect_y]. *)
+let draw_start_button theme rect_x rect_y=
+  set_color theme.thirtytwo;
+  fill_rect rect_x rect_y 150 75;
+  if theme.thirtytwo = black then set_color white else set_color black;
+  let (startx, starty) = text_size "Click to Start" in
+  center_text "Click to Start" (rect_y + 37 - starty/2)
+
 (** [draw_powerup powerup rect_y] draws the button with size [rect_y] and text
     according to if [powerup] is true or false. *)
 let draw_powerup powerup rect_y =
@@ -181,19 +205,15 @@ let start_screen (theme:color_theme) (powerup:bool) : unit =
   open_graph "";
   draw_start_message theme;
 
-  (* Click to start button *)
-  set_color theme.thirtytwo;
   let rect_x = (size_x()/2)-75 in
   let rect_y = (size_y()/2)-27 in 
-  fill_rect rect_x rect_y 150 75;
-  set_color black;
-  let (startx, starty) = text_size "Click to Start" in
-  center_text "Click to Start" (rect_y + 37 - starty/2);
+  (* Click to start button *)
+  draw_start_button theme rect_x rect_y;
 
   (* Choose a Theme Button *)
   set_color theme.four;
   fill_rect (size_x()/2 - 110 - 15) (rect_y-70) 110 50;
-  set_color theme.text1;
+  if theme.four = black then set_color white else set_color theme.text1;
   let (t_len, t_height) = text_size "Choose Theme" in 
   moveto (size_x()/2 - 110 - 15 + 55 - t_len/2) (rect_y-50-2);
   draw_string "Choose Theme";
@@ -227,6 +247,21 @@ let lose_screen (state: Board.t) theme : unit =
 
   (* draws play again button *)
   draw_play_again button_length button_height
+
+let win_message state theme highscore = 
+  update_screen state theme highscore;
+  set_color green;
+  moveto (size_x()/2 + 218) 385;
+  draw_string "Congrats!";
+  set_color black;
+  moveto (size_x()/2 + 218) 355;
+  draw_string "You reached";
+  moveto (size_x()/2 + 218) 340;
+  draw_string "2048.";
+  moveto (size_x()/2 + 218) 325;
+  draw_string "Keep up the ";
+  moveto (size_x()/2 + 218) 310;
+  draw_string "good work!"
 
 (** [draw_theme_tile x y height c1 c2 c3 c4] draws the tile for the theme
     at [(x, y)] with colors [c1], [c2], [c3], and [c4] with the same
