@@ -5,7 +5,7 @@ open Graphics
    8: F2B179: 242 177 121; FONT: F9F6F2: 249 246 242
    16: F59563: 245 149 99; FONT: F9F6F2
    32: 567C5F: 246 124 95; FONT: same as 16
-   64: f65e3b 246 94 59
+   64: f65e3b 246 94 59 156 203 255
    128: EDCF72 237 207 114
    256: EDCC61 237 204 97
    512: EDC850 237 200 80
@@ -80,10 +80,7 @@ let make_back_board x y n theme =
     fill_rect x y n n
   end
 
-(* Click to go back to home? *)
-let losing_screen () : unit = 
-  failwith "unimplemented"
-
+(** [center_text s y] draws [s] in the middle of the graph the height [y]. *)
 let center_text s y = 
   begin
     match text_size s with 
@@ -141,6 +138,7 @@ let update_screen (state : Board.t) (theme: color_theme) : unit =
 (* [start_screen] displays a "click to start game" screen. *)
 let start_screen () : unit =
   open_graph "";
+  set_color black;
   moveto (200) 400;
   (* set_font "ubuntu"; *)
   set_text_size 500;
@@ -153,7 +151,61 @@ let start_screen () : unit =
   fill_rect rect_x rect_y 150 75;
   set_color black;
   center_text "Click to Start" (size_y()/2);
+  set_color yellow;
+  fill_rect (rect_x-100) (rect_y-50) 80 100;
+  set_color black;
+  center_text "Click to choose theme" (rect_y-50);
   center_text "by David Chen, Janice Jung, and Edith Vu" 50
+
+
+let lose_screen (state: Board.t) theme : unit =
+  let button_length = 80 in
+  let button_height = 40 in
+  (* draws "You Lose" *)
+  set_color black;
+  moveto (size_x()/2 + 225) (size_y()/2 +button_height/2 + 15);
+  draw_string "You lost!";
+
+  (* draws play again button *)
+  set_color (rgb 180 200 120); 
+  fill_rect (size_x()/2 + 210) (size_y()/2 - button_height/2) button_length button_height;
+  set_color (white);
+  let (play_length, play_height) = text_size "Play Again" in
+  moveto (250 + (size_x()/2 - play_length/2)) (size_y()/2 - play_height/2); 
+  draw_string "Play Again"
+
+let theme_screen () : unit = 
+  clear_graph();
+  set_color black;
+  center_text "Click on a tile to choose a color theme!" 370;
+  let button_height = 100 in
+  let padding = 20 in
+  (* blue theme *)
+  set_color blue;
+  fill_rect (size_x()/2-button_height/2) (size_y()/2+padding/2) button_height button_height;
+
+  (* default theme *)
+  set_color yellow; 
+  fill_rect (size_x()/2-button_height-padding-button_height/2) 
+    (size_y()/2+padding/2) button_height button_height;
+
+  (* pastel theme *)
+  set_color green;
+  fill_rect (size_x()/2+padding+button_height/2) (size_y()/2 + padding/2) button_height button_height;
+
+  (* dark mode theme *)
+  set_color black;
+  fill_rect (size_x()/2-button_height/2) (size_y()/2-padding/2-button_height) button_height button_height;
+
+  (* rainbow theme *)
+  set_color yellow;
+  fill_rect (size_x()/2-button_height-padding-button_height/2)  (size_y()/2-padding/2-button_height) button_height button_height;
+
+  (* 3110 theme? *)
+  set_color red;
+  fill_rect (size_x()/2+padding+button_height/2) (size_y()/2 - padding/2-button_height) button_height button_height;
+
+
 
 
 

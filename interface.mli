@@ -19,4 +19,8 @@ type color_theme = {
 
 val start_screen : unit -> unit
 
-val update_screen: Board.t -> color_theme -> unit
+val lose_screen : Board.t -> color_theme -> unit
+
+val update_screen : Board.t -> color_theme -> unit
+
+val theme_screen : unit -> unit

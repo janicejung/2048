@@ -5,7 +5,7 @@ MLIS=$(MODULES:=.mli)
 TEST=test.byte
 MAIN=main.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind
-PKGS=oUnit Graphics
+PKGS=oUnit graphics
 
 
 # INSTALL_ARGS := $(if $(PREFIX),--prefix $(PREFIX),)
