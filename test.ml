@@ -112,12 +112,35 @@ let test = [
       assert_equal (fill_rest 2 [1;1]) [1;1]);
 
   (** combine_score tests*)
-
-
+  "test_combine_score1" >:: (fun _ -> 
+      assert_equal (combine_score [0;0;0;0] 4 0) 0);
+  "test_combine_score2" >:: (fun _ -> 
+      assert_equal (combine_score [0;0;0;2] 4 0) 0);
+  "test_combine_score3" >:: (fun _ -> 
+      assert_equal (combine_score [0;0;2;2] 4 0) 4);
   (** combine_left_board tests*)
-
+  "test_combine_left1" >:: (fun _ -> 
+      assert_equal (combine_left_board [2;4;8;8] 4 []) [2;4;16;0]);
+  "test_combine_left2" >:: (fun _ -> 
+      assert_equal (combine_left_board [0;0;0;8] 4 []) [8;0;0;0]);
+  "test_combine_left3" >:: (fun _ -> 
+      assert_equal (combine_left_board [0;0;0;0] 4 []) [0;0;0;0]);
+  "test_combine_left4" >:: (fun _ -> 
+      assert_equal (combine_left_board [2;2;2;2] 4 []) [4;4;0;0]);
+  "test_combine_left5" >:: (fun _ -> 
+      assert_equal (combine_left_board [2;4;4;2] 4 []) [2;8;2;0]);
 
   (** combine_right_board tests*)
+  "test_combine_right1" >:: (fun _ -> 
+      assert_equal (combine_right_board [2;4;8;8] 4 []) [0;2;4;16]);
+  "test_combine_right2" >:: (fun _ -> 
+      assert_equal (combine_right_board [0;0;0;8] 4 []) [0;0;0;8]);
+  "test_combine_right3" >:: (fun _ -> 
+      assert_equal (combine_right_board [0;0;0;0] 4 []) [0;0;0;0]);
+  "test_combine_right4" >:: (fun _ -> 
+      assert_equal (combine_right_board [4;4;2;8] 4 []) [0;8;2;8]);
+  "test_combine_right5" >:: (fun _ -> 
+      assert_equal (combine_right_board [8;8;8;8] 4 []) [0;0;16;16]);
 
 
   (** move_left tests*)
