@@ -157,16 +157,16 @@ let rec play_game n (state:Board.t) theme (powerup:bool) highscore =
   let status = wait_next_event [Key_pressed; Button_down] in
   if status.keypressed then
     match status.key with
-    | 'w' | '\017' ->
+    | 'w' ->
       play_game n (new_board_helper move_up n state powerup)
         theme powerup highscore
-    | 'a' | '\018' ->
+    | 'a' ->
       play_game n (new_board_helper move_left n state powerup)
         theme powerup highscore
-    | 's' | '\019' ->
+    | 's' ->
       play_game n (new_board_helper move_down n state powerup)
         theme powerup highscore
-    | 'd' | '\020' ->
+    | 'd' ->
       play_game n (new_board_helper move_right n state powerup)
         theme powerup highscore
     | _ -> play_game n state theme powerup highscore
@@ -224,6 +224,13 @@ and choose_theme powerup highscore=
   then main cs_theme powerup highscore
   else choose_theme powerup highscore
 
+and help_screen theme powerup highscore = 
+  draw_help_screen();
+  let status = wait_next_event [Button_down] in
+  if (status.mouse_x<75) && (status.mouse_x>=25) && (status.mouse_y< 430)
+     && (status.mouse_y>= 410)
+  then main theme powerup highscore
+
 (** [main ()] prompts for the game to play, then starts it. *)
 and main (theme:color_theme) (powerup:bool) highscore =
   start_screen theme powerup;
@@ -248,6 +255,13 @@ and main (theme:color_theme) (powerup:bool) highscore =
              status.mouse_x>=size_x()/2 + 15) && 
             (status.mouse_y< rect_y-70 + 50) && (status.mouse_y>= rect_y-70)
     then main theme (not powerup) highscore 
+
+    (* Clicking the help button *)
+    else if (status.mouse_x<(size_x()-20) &&
+             status.mouse_x>=size_x()-90) && 
+            (status.mouse_y< size_y() -20) && (status.mouse_y>= size_y() -50)
+    then help_screen theme powerup highscore
+
     else loop theme
   in
   loop theme

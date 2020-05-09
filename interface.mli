@@ -26,3 +26,5 @@ val update_screen : Board.t -> color_theme -> int -> unit
 val theme_screen : unit -> unit
 
 val win_message : Board.t -> color_theme -> int -> unit
+
+val draw_help_screen : unit -> unit

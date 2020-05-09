@@ -184,6 +184,16 @@ let draw_start_button theme rect_x rect_y=
   let (startx, starty) = text_size "Click to Start" in
   center_text "Click to Start" (rect_y + 37 - starty/2)
 
+(** [draw_choose_theme_button theme rect_y] draws the button with the
+    background matching [theme] and location [rect_y]. *)
+let draw_choose_theme_button theme rect_y =
+  set_color theme.four;
+  fill_rect (size_x()/2 - 110 - 15) (rect_y-70) 110 50;
+  if theme.four = black then set_color white else set_color theme.text1;
+  let (t_len, t_height) = text_size "Choose Theme" in 
+  moveto (size_x()/2 - 110 - 15 + 55 - t_len/2) (rect_y-50-2);
+  draw_string "Choose Theme"
+
 (** [draw_powerup powerup rect_y] draws the button with size [rect_y] and text
     according to if [powerup] is true or false. *)
 let draw_powerup powerup rect_y =
@@ -199,28 +209,52 @@ let draw_powerup powerup rect_y =
   moveto (size_x()/2 + 70 - p_len/2 + 57)(rect_y-50-10);
   if powerup then draw_string "ON" else draw_string "OFF"
 
+let draw_help_button theme = 
+  set_color theme.twofiftysix;
+  fill_rect (size_x()-90) (size_y() -50) 70 30;
+  let (helpx, helpy) = text_size "Help" in
+  set_color white;
+  moveto  (size_x()-55 - helpx/2) (size_y()-35 -helpy/2);
+  draw_string "Help"
+
+let draw_home_button () =
+  set_color blue;
+  fill_poly [|(50, 410); (30, 420); (50, 430)|];
+  fill_rect 50 415 25 10
+
+let draw_help_screen () = 
+  clear_graph ();
+  set_color black;
+  center_text "How To Play" 400;
+  center_text "The goal of this game is to reach the 2048 tile." 350;
+  center_text "When two tiles of the same number touch, they merge into one." 
+    325;
+  center_text "Use the w, a, s, and d keys to move the tiles around" 300;
+  center_text "There are powerups you can toggle to help and hinder your game:"
+    250;
+  center_text " - Double: Doubles the number of every tile" 225;
+  center_text " - Half: Halves the number of every tile except 2" 200;
+  center_text " - Sort: Sorts the tiles in each row" 175;
+  center_text " - Shuffle: Shuffles the tiles randomly" 150;
+  center_text " - Remove: Removes a random tile from the board" 125;
+  center_text "Good Luck Playing!" 100;
+  draw_home_button()
+
 (** [start_screen theme powerup] displays a "click to start game" screen
     and allows the user to change [theme] and toggle [powerup]. *)
 let start_screen (theme:color_theme) (powerup:bool) : unit =
   open_graph "";
   draw_start_message theme;
-
   let rect_x = (size_x()/2)-75 in
   let rect_y = (size_y()/2)-27 in 
   (* Click to start button *)
   draw_start_button theme rect_x rect_y;
-
   (* Choose a Theme Button *)
-  set_color theme.four;
-  fill_rect (size_x()/2 - 110 - 15) (rect_y-70) 110 50;
-  if theme.four = black then set_color white else set_color theme.text1;
-  let (t_len, t_height) = text_size "Choose Theme" in 
-  moveto (size_x()/2 - 110 - 15 + 55 - t_len/2) (rect_y-50-2);
-  draw_string "Choose Theme";
-
+  draw_choose_theme_button theme rect_y;
   (* Powerups Button *)
   draw_powerup powerup rect_y;
-
+  (* Help Button *)
+  draw_help_button theme;
   set_color black;
   center_text "by David Chen, Janice Jung, and Edith Vu" 50
 
@@ -282,39 +316,71 @@ let theme_screen () : unit =
   set_color black;
   center_text "Click on a tile to choose a color theme!" 370;
   let button_height = 100 in
-  let padding = 20 in
-
+  let padding = 40 in
   (* blue theme *)
   draw_theme_tile 
     (size_x()/2-button_height/2) (size_y()/2+padding/2) button_height 
     (rgb 10 42 145) (rgb 4 114 173) (rgb 75 173 234) (rgb 178 222 251);
+  let blue_name = "The Cloud" in 
+  let (bluex, bluey) = text_size blue_name in
+  moveto (size_x()/2 - bluex/2) (size_y()/2+padding/2 - 20);
+  set_color black;
+  draw_string blue_name;
 
   (* default theme *)
   draw_theme_tile 
     (size_x()/2-button_height-padding-button_height/2) (size_y()/2+padding/2)
     button_height 
     (rgb 237 197 63) (rgb 246 94 59) (rgb 245 149 99) (rgb 237 224 200);
+  let default_name = "Default" in 
+  let (defx, defy) = text_size default_name in
+  moveto (size_x()/2-button_height-padding-defx/2) (size_y()/2+padding/2 - 20);
+  set_color black;
+  draw_string default_name;
 
   (* pastel theme *)
   draw_theme_tile 
     (size_x()/2+padding+button_height/2) (size_y()/2 + padding/2) button_height 
     (rgb 225 255 144) (rgb 255 185 198) (rgb 186 245 244) (rgb 255 254 184);
+  let pastel_name = "Copy and Pastel" in 
+  let (pasx, pasy) = text_size pastel_name in
+  moveto (size_x()/2+padding+2*button_height/2-pasx/2)
+    (size_y()/2+padding/2-20);
+  set_color black;
+  draw_string pastel_name;
 
   (* dark mode theme *)
   draw_theme_tile 
     (size_x()/2-button_height/2) (size_y()/2-padding/2-button_height)
     button_height (rgb 2 143 163) (rgb 98 93 82) (rgb 34 34 34) (rgb 97 97 97);
+  let dark_name = "Dark Mode" in 
+  let (darkx, darky) = text_size dark_name in
+  moveto (size_x()/2-darkx/2) (size_y()/2-padding/2-button_height - 20);
+  set_color black;
+  draw_string dark_name;
 
   (* rainbow theme *)
   draw_theme_tile 
     (size_x()/2-button_height-padding-button_height/2) 
     (size_y()/2-padding/2-button_height) button_height 
     (rgb 77 111 247) (rgb 29 189 73) (rgb 255 232 0) (rgb 255 65 65);
+  let rainbow_name = "Rainbow" in 
+  let (rainx, rainy) = text_size rainbow_name in
+  moveto (size_x()/2-button_height-padding-rainx/2)
+    (size_y()/2-padding/2-button_height -20);
+  set_color black;
+  draw_string rainbow_name;
 
   (* 3110 theme? *)
   draw_theme_tile 
     (size_x()/2+padding+button_height/2) (size_y()/2 - padding/2-button_height)
     button_height black black black black;
+  let hard_name = "Hard Code" in 
+  let (hardx, hardy) = text_size hard_name in
+  moveto (size_x()/2+padding+2*button_height/2-hardx/2)
+    (size_y()/2 - padding/2-button_height -20);
+  set_color black;
+  draw_string hard_name
 
 
 
