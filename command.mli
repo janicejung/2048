@@ -23,3 +23,9 @@ val transpose : int list list -> int list list
 val move_up : Board.t -> Board.t 
 
 val move_down : Board.t -> Board.t 
+
+val combine_left_board: int list -> int ->'b -> int list
+
+val combine_right_board: int list -> int ->'b -> int list
+
+val combine_score: int list -> int ->int -> int 
