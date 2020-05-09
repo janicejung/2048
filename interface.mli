@@ -17,7 +17,7 @@ type color_theme = {
   background: Graphics.color;
 }
 
-val start_screen : unit -> unit
+val start_screen : color_theme -> bool -> unit
 
 val lose_screen : Board.t -> color_theme -> unit
 

@@ -32,6 +32,8 @@ type color_theme = {
   background: Graphics.color;
 }
 
+(** [set_tile_color theme n] sets the background color for the tile according
+    to the color of [n] in [theme]. *)
 let set_tile_color theme n =
   match n with
   | 0 -> set_color(theme.empty)
@@ -49,11 +51,16 @@ let set_tile_color theme n =
   | n when n > 2048 -> set_color(theme.greater)
   | _ -> set_color red
 
+(** [set_font_color theme n] sets the color of the font on the tile according
+    to the color of [n] in [theme]. *)
 let set_font_color theme n = 
   match n with 
   | n when n = 2 || n =4 -> set_color(theme.text1)
   | _ -> set_color (theme.text2)
 
+(** [draw_num x y tile_width padding_width n theme] draws the number [n] on
+    the tile at [(x,y)] with the [tile_width] and [padding_width] according
+    to the [theme]. *)
 let draw_num x y tile_width padding_width n theme = 
   set_font_color theme n;
   let str = string_of_int n in 
@@ -62,6 +69,10 @@ let draw_num x y tile_width padding_width n theme =
     (y + padding_width + (tile_width/2) - (height/2));
   draw_string str
 
+(** [draw_row x y tile_width padding_width lst theme] draws the tiles in the
+    row according to the numbers in [lst] with the colors in [theme] at
+    [(x,y)] with size of [tile_width] and distance between each tile as
+    [padding_width]. *)
 let rec draw_row x y tile_width padding_width lst theme= 
   match lst with 
   | h::t -> set_tile_color theme h;
@@ -89,6 +100,7 @@ let center_text s y =
       draw_string s;
   end
 
+(** [draw_score int x] draws the score, [int], at location [x] on the screen. *)
 let draw_score int x = 
   set_color (black);
   let (scorex, _) = text_size "Score:" in 
@@ -102,6 +114,7 @@ let draw_score int x =
   moveto (x + (60 - numx)/2) (350 + (20 - numy)/2);
   draw_string (string_of_int int)
 
+(** [draw_quit_button ()] draws a quit button on the screen. *)
 let draw_quit_button () =
   set_color (rgb 246 124 95); 
   fill_rect 17 50 60 20;
@@ -110,7 +123,9 @@ let draw_quit_button () =
   set_color (black);
   draw_string "Quit"
 
-let update_screen (state : Board.t) (theme: color_theme) : unit = 
+(** [update_screen state theme] draws the new board and score according to
+    [state] and [theme]. *)
+let update_screen (state : Board.t) (theme: color_theme): unit = 
   begin
     clear_graph ();
     draw_score state.score 17; 
@@ -126,38 +141,82 @@ let update_screen (state : Board.t) (theme: color_theme) : unit =
     helper (List.rev state.board) boardx boardy 85 12;
   end
 
-
-
-(* set_color (theme.background);
-   let grid_width = 200 in 
-   let grid_height = 200 in
-   let rect_x = (size_x()/2 - grid_height/2) in
-   let rect_y = (size_y()/2 - grid_width/2) in 
-   fill_rect rect_x rect_y grid_width grid_height *)
-
-(* [start_screen] displays a "click to start game" screen. *)
-let start_screen () : unit =
-  open_graph "";
+(** [draw_start_message theme] draws the "This is 2048" message with colors
+    corresponding to [theme]. *)
+let draw_start_message theme : unit =
   set_color black;
-  moveto (200) 400;
-  (* set_font "ubuntu"; *)
-  set_text_size 500;
-  center_text "This is 2048" 400;
-  moveto 100 350;
-  let orange = rgb 198 141 62 in
-  set_color orange;
+  center_text "This is" 350;
+  let two_x = 268 in
+  set_color theme.sixteen;
+  moveto two_x 320;
+  draw_string "2";
+  set_color theme.sixtyfour;
+  moveto (two_x+20) 320;
+  draw_string "0";
+  set_color theme.fivetwelve;
+  moveto (two_x+40) 320;
+  draw_string "4";
+  set_color theme.twentyfortyeight;
+  moveto (two_x+60) 320;
+  draw_string "8"
+
+(** [draw_powerup powerup rect_y] draws the button with size [rect_y] and text
+    according to if [powerup] is true or false. *)
+let draw_powerup powerup rect_y =
+  if powerup then set_color (rgb 0 204 20) else set_color red;
+  fill_rect (size_x()/2 + 15) (rect_y-70) 110 50;
+  set_color white;
+  let (tog_len, tog_height) = text_size "Toggle Powerups" in 
+  moveto (size_x()/2 + 70 - tog_len/2) (rect_y-44);
+  draw_string "Toggle Powerups";
+  let (p_len, p_height) = text_size "Powerups:   " in 
+  moveto (size_x()/2 + 70 - p_len/2 - 3) (rect_y-50-10);
+  draw_string "Powerups:";
+  moveto (size_x()/2 + 70 - p_len/2 + 57)(rect_y-50-10);
+  if powerup then draw_string "ON" else draw_string "OFF"
+
+(** [start_screen theme powerup] displays a "click to start game" screen
+    and allows the user to change [theme] and toggle [powerup]. *)
+let start_screen (theme:color_theme) (powerup:bool) : unit =
+  open_graph "";
+  draw_start_message theme;
+
+  (* Click to start button *)
+  set_color theme.thirtytwo;
   let rect_x = (size_x()/2)-75 in
-  let rect_y = (size_y()/2)-37 in 
+  let rect_y = (size_y()/2)-27 in 
   fill_rect rect_x rect_y 150 75;
   set_color black;
-  center_text "Click to Start" (size_y()/2);
-  set_color yellow;
-  fill_rect (rect_x-100) (rect_y-50) 80 100;
+  let (startx, starty) = text_size "Click to Start" in
+  center_text "Click to Start" (rect_y + 37 - starty/2);
+
+  (* Choose a Theme Button *)
+  set_color theme.four;
+  fill_rect (size_x()/2 - 110 - 15) (rect_y-70) 110 50;
+  set_color theme.text1;
+  let (t_len, t_height) = text_size "Choose Theme" in 
+  moveto (size_x()/2 - 110 - 15 + 55 - t_len/2) (rect_y-50-2);
+  draw_string "Choose Theme";
+
+  (* Powerups Button *)
+  draw_powerup powerup rect_y;
+
   set_color black;
-  center_text "Click to choose theme" (rect_y-50);
   center_text "by David Chen, Janice Jung, and Edith Vu" 50
 
+(** [draw_play_again button_length button_height] draws the "Play Again" text
+    on the button according to the [button_length] and [button_height]. *)
+let draw_play_again button_length button_height =
+  set_color (rgb 180 200 120); 
+  fill_rect (size_x()/2 + 210) (size_y()/2 - button_height/2) 
+    button_length button_height;
+  set_color (white);
+  let (play_length, play_height) = text_size "Play Again" in
+  moveto (250 + (size_x()/2 - play_length/2)) (size_y()/2 - play_height/2); 
+  draw_string "Play Again"
 
+(** [lose_screen state theme] draws the lose message on the screen with the
+    losing board according to [state] and [theme]. *)
 let lose_screen (state: Board.t) theme : unit =
   let button_length = 80 in
   let button_height = 40 in
@@ -167,14 +226,11 @@ let lose_screen (state: Board.t) theme : unit =
   draw_string "You lost!";
 
   (* draws play again button *)
-  set_color (rgb 180 200 120); 
-  fill_rect (size_x()/2 + 210) (size_y()/2 - button_height/2) 
-    button_length button_height;
-  set_color (white);
-  let (play_length, play_height) = text_size "Play Again" in
-  moveto (250 + (size_x()/2 - play_length/2)) (size_y()/2 - play_height/2); 
-  draw_string "Play Again"
+  draw_play_again button_length button_height
 
+(** [draw_theme_tile x y height c1 c2 c3 c4] draws the tile for the theme
+    at [(x, y)] with colors [c1], [c2], [c3], and [c4] with the same
+    [height]. *)
 let draw_theme_tile x y height c1 c2 c3 c4 =
   set_color c1;
   fill_rect x y height (height/4);
@@ -185,6 +241,7 @@ let draw_theme_tile x y height c1 c2 c3 c4 =
   set_color c4;
   fill_rect x (y+(3*height/4)) height (height/4)
 
+(** [theme_screen ()] draws the theme selection screen. *)
 let theme_screen () : unit = 
   clear_graph();
   set_color black;
@@ -193,17 +250,14 @@ let theme_screen () : unit =
   let padding = 20 in
 
   (* blue theme *)
-  set_color blue;
-  fill_rect (size_x()/2-button_height/2) (size_y()/2+padding/2) 
-    button_height button_height;
-
   draw_theme_tile 
     (size_x()/2-button_height/2) (size_y()/2+padding/2) button_height 
     (rgb 10 42 145) (rgb 4 114 173) (rgb 75 173 234) (rgb 178 222 251);
 
   (* default theme *)
   draw_theme_tile 
-    (size_x()/2-button_height-padding-button_height/2) (size_y()/2+padding/2) button_height 
+    (size_x()/2-button_height-padding-button_height/2) (size_y()/2+padding/2)
+    button_height 
     (rgb 237 197 63) (rgb 246 94 59) (rgb 245 149 99) (rgb 237 224 200);
 
   (* pastel theme *)
@@ -212,19 +266,21 @@ let theme_screen () : unit =
     (rgb 225 255 144) (rgb 255 185 198) (rgb 186 245 244) (rgb 255 254 184);
 
   (* dark mode theme *)
-  set_color black;
-  fill_rect (size_x()/2-button_height/2) (size_y()/2-padding/2-button_height) 
-    button_height button_height;
+  draw_theme_tile 
+    (size_x()/2-button_height/2) (size_y()/2-padding/2-button_height)
+    button_height (rgb 2 143 163) (rgb 98 93 82) (rgb 34 34 34) (rgb 97 97 97);
 
   (* rainbow theme *)
-  set_color yellow;
-  fill_rect (size_x()/2-button_height-padding-button_height/2)  
-    (size_y()/2-padding/2-button_height) button_height button_height;
+  draw_theme_tile 
+    (size_x()/2-button_height-padding-button_height/2) 
+    (size_y()/2-padding/2-button_height) button_height 
+    (rgb 77 111 247) (rgb 29 189 73) (rgb 255 232 0) (rgb 255 65 65);
 
   (* 3110 theme? *)
-  set_color red;
-  fill_rect (size_x()/2+padding+button_height/2) 
-    (size_y()/2 - padding/2-button_height) button_height button_height;
+  draw_theme_tile 
+    (size_x()/2+padding+button_height/2) (size_y()/2 - padding/2-button_height)
+    button_height black black black black;
+
 
 
 
