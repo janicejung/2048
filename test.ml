@@ -78,6 +78,9 @@ let test = [
       assert_equal (have_lost_row [1]) true;);
 
   (** transpose tests*)
+  "test_transpose_1" >:: (fun _ -> 
+      assert_equal 
+        (transpose [[0]]) [[0]];);
   "test_transpose" >:: (fun _ -> 
       assert_equal 
         (transpose [[1;2;3];[4;5;6];[7;8;9]]) [[1;4;7];[2;5;8];[3;6;9]];);
@@ -167,7 +170,6 @@ let test = [
            {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; 
             score = 0; moves = 0}));
 
-
   (** double_num tests*)
   "test_double_num" >:: (fun _ -> 
       assert_equal true 
@@ -178,19 +180,19 @@ let test = [
         (compare_board(double_num [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
            [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]));
 
-  (* 
-  (** double_num tests*)
-  "test_get_coord_list" >:: (fun _ -> 
-      assert_equal true (compare_list [[1,2];[0,0];[9;2]] *)
-
   (** half_num tests *)  
   "test_half_num" >:: (fun _ -> 
       assert_equal true 
         (compare_board (half_num [[0;2;4;8];[2;4;4;8];[0;0;2;0];[2;0;2;0]]) 
-           [[0;2;4;8];[2;4;4;8];[0;0;2;0];[2;0;2;0]]));
+           [[0;2;2;4];[2;2;2;4];[0;0;2;0];[2;0;2;0]]));
   "test_half_num1" >:: (fun _ -> 
       assert_equal true 
         (compare_board(half_num [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
+           [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]));
+
+  "test_remove_num" >:: (fun _ -> 
+      assert_equal true 
+        (compare_board (remove_random_tile [[0;0;4;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
            [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]));
 ]
 

@@ -27,7 +27,8 @@ let rec print_board (board:int list list) =
       print_row t
   in match board with
   | [] -> ()
-  | h::t -> (print_row h; print_endline "\n---------------------------"; print_board t;)
+  | h::t -> (print_row h; print_endline "\n---------------------------";
+             print_board t;)
 
 let print_score (score:int)
   = print_endline ("Score: " ^ string_of_int score)

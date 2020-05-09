@@ -13,4 +13,6 @@ val double_num: int list list -> int list list
 
 val half_num : int list list -> int list list 
 
+val remove_random_tile : int list list -> int list list
+
 val activate_powerup : Board.t -> int -> Board.t
