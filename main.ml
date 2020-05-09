@@ -42,22 +42,22 @@ let blue_theme = {
 }
 
 let pastel_theme = {
-  text1 = rgb 119 110 10;
-  text2 = rgb 249 246 242;
-  empty = rgb 205 193 181;
-  two = rgb 238 228 218;
-  four = rgb 237 224 200;
-  eight = rgb 242 177 121;
-  sixteen = rgb 245 149 99;
-  thirtytwo = rgb 246 124 95;
-  sixtyfour= rgb 156 203 255;
-  onetwentyeight =  rgb 237 207 114;
-  twofiftysix = rgb 237 204 97;
-  fivetwelve = rgb 237 200 80;
-  tentwentyfour = rgb 237 197 63;
-  twentyfortyeight = rgb 238 210 46;
-  greater = rgb 0 0 0;
-  background= rgb 119 110 101;
+  text1 = black;
+  text2 = black;
+  empty = white;
+  two = rgb 255 254 184;
+  four = rgb 193 248 198;
+  eight = rgb 186 245 244;
+  sixteen = rgb 179 208 248;
+  thirtytwo = rgb 191 193 255;
+  sixtyfour= rgb 222 187 255;
+  onetwentyeight =  rgb 255 185 243;
+  twofiftysix = rgb 255 185 198;
+  fivetwelve = rgb 255 187 166;
+  tentwentyfour = rgb 255 224 164;
+  twentyfortyeight = rgb 225 255 144;
+  greater = rgb 187 255 254;
+  background= rgb 255 237 237;
 }
 
 let dark_mode_theme = {

@@ -175,26 +175,41 @@ let lose_screen (state: Board.t) theme : unit =
   moveto (250 + (size_x()/2 - play_length/2)) (size_y()/2 - play_height/2); 
   draw_string "Play Again"
 
+let draw_theme_tile x y height c1 c2 c3 c4 =
+  set_color c1;
+  fill_rect x y height (height/4);
+  set_color c2;
+  fill_rect x (y+(height/4)) height (height/4);
+  set_color c3;
+  fill_rect x (y+(2*height/4)) height (height/4);
+  set_color c4;
+  fill_rect x (y+(3*height/4)) height (height/4)
+
 let theme_screen () : unit = 
   clear_graph();
   set_color black;
   center_text "Click on a tile to choose a color theme!" 370;
   let button_height = 100 in
   let padding = 20 in
+
   (* blue theme *)
   set_color blue;
   fill_rect (size_x()/2-button_height/2) (size_y()/2+padding/2) 
     button_height button_height;
 
+  draw_theme_tile 
+    (size_x()/2-button_height/2) (size_y()/2+padding/2) button_height 
+    (rgb 10 42 145) (rgb 4 114 173) (rgb 75 173 234) (rgb 178 222 251);
+
   (* default theme *)
-  set_color yellow; 
-  fill_rect (size_x()/2-button_height-padding-button_height/2) 
-    (size_y()/2+padding/2) button_height button_height;
+  draw_theme_tile 
+    (size_x()/2-button_height-padding-button_height/2) (size_y()/2+padding/2) button_height 
+    (rgb 237 197 63) (rgb 246 94 59) (rgb 245 149 99) (rgb 237 224 200);
 
   (* pastel theme *)
-  set_color green;
-  fill_rect (size_x()/2+padding+button_height/2) (size_y()/2 + padding/2) 
-    button_height button_height;
+  draw_theme_tile 
+    (size_x()/2+padding+button_height/2) (size_y()/2 + padding/2) button_height 
+    (rgb 225 255 144) (rgb 255 185 198) (rgb 186 245 244) (rgb 255 254 184);
 
   (* dark mode theme *)
   set_color black;
