@@ -1,3 +1,79 @@
+(* Test Plan:
+    What was tested in OUnit:
+        Functions Tested:
+   - make_board 
+   - board_full
+   - row_empty_tiles
+   - get_empty_tiles
+   - place_num_in_row
+   - have_lost_row
+   - transpose
+   - have_lost
+   - fill_rest
+   - combine_score
+   - combine_left
+   - combine_right
+   - move_left
+   - move_right
+   - move_up
+   - move_down
+   - double_num
+   - half_num
+   - remove_random_tile
+   - sort_row
+     These functions were specifically tested in OUnit using an int list list 
+     board to test whether these functions were producing the right board to 
+     be displayed on the screen. These functions were able to be tested by OUnit
+     since they did not rely on the random generation of numbers that our other
+     functions used. 
+
+    What was tested Manually:
+    A lot of our game depends on random generation of numbers and tiles which 
+    we could not test with OUnit. We tested these essential functionalities to 
+    our game manually by playing our game extensively. The random 
+    functionalities we tested in particular were the spawning of a random 
+    number with each move, the random location in which the new number was 
+    spawned in, the random spawn timing of a powerup after a certain 
+    number of moves, the random choice of a powerup when one is spawned, and
+    the random location in which the powerup was spawed. During MS1 we printed
+    the grid with every move into the terminal to test and during MS2 we used
+    our GUI.
+
+    We also tested our GUI manually: we manually played the game to test our 
+    'w, a, s, d' keypress and mouse button press functionalities.
+
+    How we developed our tests:
+    As we developed our test cases, we used the glass box testing approach. 
+    This approach was used since we understood the implementation and structure
+    of our code and what each function was supposed to output. After documenting
+    our specifications and implementing functions, we tested functions manually 
+    and through OUnit to ensure that our function implementation was correct. 
+    In doing so, we were able to proactively modify our code to carry out the 
+    purpose and functionality of our project.
+
+    The modules that were tested by OUnit were Board, Command, and Powerup. 
+    Testing for the Board Module verified if our functions correctly initialized
+    and updated the board after a player moves left, right, up, or down. 
+    Testing for the Command Module verified if our functions correctly combine
+    like tiles and update the board after a player makes a move. This Command
+    module also tested to see if scores were added up correctly.
+    Testing for the Powerup Module verified if the powerups we made (DoubleNum,
+    HalfNum, SortRow, Shuffle, RemoveRandomTile) correctly updated the board 
+    after a user swiped onto the powerup.
+
+    Why our test suite demonstrates correctness of system:
+    Our OUnit tests ensure that the basic functionalities of our 2048 game, 
+    such as the combining of two tiles and the up, down, left, and right
+    movement of the tiles, are working. The helper function that we test by 
+    passing in random and edge-case boards make up the foundation of the game.
+
+    The random functions of our game also depend on function that were tested 
+    in our OUnit test suite, such as [get_empty_tiles] and [place_num_in_row] 
+    and because all our OUnit tests were passing, we were able to confirm that 
+    our manual tests were also functioning properly instead of simply looking
+    like they were working by chance.
+*)
+
 open OUnit
 open Board
 open Command
@@ -227,6 +303,15 @@ let test = [
         (compare_board(half_num [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
            [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]));
 
+  (* sort_row tests *)
+  "test_sort_row" >:: (fun _ -> 
+      assert_equal true 
+        (compare_board(sort_row [[0;0;1;2];[4;8;0;20];[5;4;3;0];[1;2;3;4]]) 
+           [[2;1;0;0];[20;8;4;0];[5;4;3;0];[4;3;2;1]]));
+  "test_sort_row2" >:: (fun _ -> 
+      assert_equal true 
+        (compare_board(sort_row [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]) 
+           [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]));
   (* remove_random_tile test *)
   "test_remove_num" >:: (fun _ -> 
       assert_equal true 

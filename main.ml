@@ -3,6 +3,7 @@ open Command
 open Interface
 open Graphics
 
+(* default theme colors *)
 let default = {
   text1 = rgb 119 110 10;
   text2 = rgb 249 246 242;
@@ -22,6 +23,7 @@ let default = {
   background= rgb 119 110 101;
 }
 
+(* blue theme colors *)
 let blue_theme = {
   text1 = rgb 119 110 10;
   text2 = rgb 249 246 242;
@@ -41,6 +43,7 @@ let blue_theme = {
   background= rgb 4 53 93;
 }
 
+(* pastel theme colors *)
 let pastel_theme = {
   text1 = black;
   text2 = black;
@@ -60,6 +63,7 @@ let pastel_theme = {
   background= rgb 255 237 237;
 }
 
+(* dark mode theme colors *)
 let dark_mode_theme = {
   text1 = rgb 247 155 25;
   text2 = white;
@@ -79,6 +83,7 @@ let dark_mode_theme = {
   background= rgb 18 18 18;
 }
 
+(* rainbow theme colors *)
 let rainbow_theme = {
   text1 = black;
   text2 = black;
@@ -98,6 +103,7 @@ let rainbow_theme = {
   background= rgb 300 100 117;
 }
 
+(* challenge theme colors *)
 let cs_theme = {
   text1 = black;
   text2 = black;
@@ -121,10 +127,12 @@ let cs_theme = {
 let init_board n =
   make_board n |> place_random_tile n |> place_random_tile n
 
+(** [spawn_powerup n state powerup] spawns a powerup on the board in [start] if
+    [powerup] is toggled on. *)
 let spawn_powerup n state (powerup:bool) =
   if powerup then (
     let chance = Random.int 100 in
-    if state.moves > 5 && chance < 100 then 
+    if state.moves > 20 && chance < 100 then 
       let new_board = place_random_powerup n state in
       {new_board with moves = 0} 
     else state
@@ -176,6 +184,8 @@ let rec play_game n (state:Board.t) theme (powerup:bool) highscore =
     else play_game n state theme powerup highscore
   else play_game n state theme powerup highscore
 
+(** [choose_theme powerup highscore] changes the colors of the GUI based
+    on the theme the user selects. *)
 and choose_theme powerup highscore= 
   theme_screen();
   let button_height = 100 in 
@@ -220,10 +230,12 @@ and choose_theme powerup highscore=
   else if (status.mouse_x<size_x()/2+padding+button_height/2+100) && 
           status.mouse_x>=(size_x()/2+padding+button_height/2) && 
           (status.mouse_y< size_y()/2 - padding/2-button_height+100) && 
-          (status.mouse_y>= (size_y()/2 - padding/2-button_height))
+          (status.mouse_y>= (size_y()/2-padding/2-button_height))
   then main cs_theme powerup highscore
   else choose_theme powerup highscore
 
+(** [help_screen theme powerup highscore] moves the the help screen if the
+    user clicks on the help button. *)
 and help_screen theme powerup highscore = 
   draw_help_screen();
   let status = wait_next_event [Button_down] in
@@ -231,41 +243,41 @@ and help_screen theme powerup highscore =
      && (status.mouse_y>= 410)
   then main theme powerup highscore
 
-(** [main ()] prompts for the game to play, then starts it. *)
+(** [main theme powerup highscore] prompts for the game to play, 
+    then starts it. *)
 and main (theme:color_theme) (powerup:bool) highscore =
   start_screen theme powerup;
-  let rect_x = (size_x()/2)-75 in
-  let rect_y = (size_y()/2)-37 in 
+  let rect_x = (size_x()/2)-75 in let rect_y = (size_y()/2)-37 in 
 
   let rec loop (theme:color_theme) : unit =
     let status = wait_next_event [Button_down] in
     (* Start Game Button *)
     if (status.mouse_x<150 + rect_x) && status.mouse_x>=rect_x && 
-       (status.mouse_y< 75 + rect_y) && (status.mouse_y>= rect_y) then 
-      play_game 4 (init_board 4) theme powerup highscore
+       (status.mouse_y< 75 + rect_y) && (status.mouse_y>= rect_y) 
+    then play_game 4 (init_board 4) theme powerup highscore
 
     (* Choose A Theme Button *)
-    else if (status.mouse_x<(size_x()/2 -15) && 
-             status.mouse_x>=(size_x()/2 - 110 - 15)) && 
-            (status.mouse_y< rect_y-20) && (status.mouse_y>= (rect_y-70)) 
+    else if status.mouse_x<(size_x()/2 -15) && 
+            status.mouse_x>=(size_x()/2 - 125) && 
+            status.mouse_y< (rect_y-20) && status.mouse_y>= (rect_y-70)
     then choose_theme powerup highscore
 
-    (** Click to toggle powerup function *)
-    else if (status.mouse_x<(size_x()/2 + 15 + 110) &&
-             status.mouse_x>=size_x()/2 + 15) && 
-            (status.mouse_y< rect_y-70 + 50) && (status.mouse_y>= rect_y-70)
+    (* Click to toggle powerup function *)
+    else if status.mouse_x<(size_x()/2 + 125) && 
+            status.mouse_x>=(size_x()/2 + 15) && 
+            status.mouse_y< (rect_y-20) && status.mouse_y>= (rect_y-70)
     then main theme (not powerup) highscore 
 
     (* Clicking the help button *)
-    else if (status.mouse_x<(size_x()-20) &&
-             status.mouse_x>=size_x()-90) && 
-            (status.mouse_y< size_y() -20) && (status.mouse_y>= size_y() -50)
+    else if (status.mouse_x<(size_x()-20) && status.mouse_x>=size_x()-90) && 
+            status.mouse_y< (size_y() -20) && status.mouse_y>= (size_y() -50)
     then help_screen theme powerup highscore
 
     else loop theme
-  in
-  loop theme
+  in loop theme
 
+(** [lose_screen_state state theme powerup highscore] updates the screen to
+    display a "You Lost" message and a Play Again Button if the player loses. *)
 and lose_screen_state state theme (powerup:bool) highscore= 
   update_screen state theme highscore;
   lose_screen state theme;

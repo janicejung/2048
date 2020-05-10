@@ -23,29 +23,30 @@ type color_theme = {
     to the color of [n] in [theme]. *)
 let set_tile_color theme n =
   match n with
-  | 0 -> set_color(theme.empty)
-  | 2 -> set_color(theme.two)
-  | 4 -> set_color(theme.four)
-  | 8 -> set_color(theme.eight)
-  | 16 -> set_color(theme.sixteen)
-  | 32 -> set_color(theme.thirtytwo)
-  | 64 -> set_color(theme.sixtyfour)
-  | 128 -> set_color(theme.onetwentyeight)
-  | 256 -> set_color(theme.twofiftysix)
-  | 512 -> set_color(theme.fivetwelve)
-  | 1024 -> set_color(theme.tentwentyfour)
-  | 2048 -> set_color(theme.twentyfortyeight)
-  | n when n > 2048 -> set_color(theme.greater)
+  | 0 -> set_color theme.empty
+  | 2 -> set_color theme.two
+  | 4 -> set_color theme.four
+  | 8 -> set_color theme.eight
+  | 16 -> set_color theme.sixteen
+  | 32 -> set_color theme.thirtytwo
+  | 64 -> set_color theme.sixtyfour
+  | 128 -> set_color theme.onetwentyeight
+  | 256 -> set_color theme.twofiftysix
+  | 512 -> set_color theme.fivetwelve
+  | 1024 -> set_color theme.tentwentyfour
+  | 2048 -> set_color theme.twentyfortyeight
+  | n when n > 2048 -> set_color theme.greater
   | _ -> set_color red
 
 (** [set_font_color theme n] sets the color of the font on the tile according
     to the color of [n] in [theme]. *)
 let set_font_color theme n = 
   match n with 
-  | n when n = 2 || n =4 -> set_color(theme.text1)
-  | _ -> set_color (theme.text2)
+  | n when n = 2 || n =4 -> set_color theme.text1
+  | _ -> set_color theme.text2
 
-
+(** [draw_num helepr x y tile_width padding_width str] moves to the
+    center of the tile and draws the number. *)
 let draw_num_helper x y tile_width padding_width str = 
   let (length, height) = text_size str in 
   moveto (x + padding_width + (tile_width/2) - length/2)
@@ -86,37 +87,33 @@ let rec draw_row x y tile_width padding_width lst theme=
     n x n including the padding width with the bottom left corner at position
     (x,y). *)
 let make_back_board x y n theme =
-  begin
-    set_color (theme.background);
-    fill_rect x y n n
-  end
+  set_color theme.background;
+  fill_rect x y n n
 
 (** [center_text s y] draws [s] in the middle of the graph the height [y]. *)
 let center_text s y = 
-  begin
-    match text_size s with 
-    | (a,b) -> let text_length = a in
-      moveto (size_x()/2 - text_length/2) y;
-      draw_string s;
-  end
+  match text_size s with 
+  | (a,b) -> let text_length = a in
+    moveto (size_x()/2 - text_length/2) y;
+    draw_string s
 
 (** [draw_score int x] draws the score, [int], at location [x] on the screen. *)
 let draw_score int x = 
-  set_color (black);
+  set_color black;
   let (scorex, _) = text_size "Score:" in 
   moveto (x + (60 - scorex)/2) 375;
   draw_string "Score:";
   moveto x 350;
-  set_color(black);
+  set_color black;
   fill_rect x 350 60 20;
-  set_color (white);
+  set_color white;
   let (numx, numy) = text_size (string_of_int int) in 
   moveto (x + (60 - numx)/2) (350 + (20 - numy)/2);
   draw_string (string_of_int int)
 
 (** [draw_score int x] draws the score, [int], at location [x] on the screen. *)
 let draw_high_score int x = 
-  set_color (black);
+  set_color black;
   let (scorex, _) = text_size "High Score:" in 
   moveto (x + (60 - scorex)/2) 325;
   draw_string "High Score:";
@@ -133,12 +130,10 @@ let draw_quit_button () =
   set_color (rgb 246 124 95); 
   fill_rect 17 50 60 20;
   let (quitx, quity) = text_size ("Quit") in
-  moveto (17 + (60 - quitx)/2) (50+(20-quity)/2);
-  set_color (black);
+  moveto (17 + (60 - quitx)/2) (50+ (20-quity)/2);
+  set_color black;
   draw_string "Quit"
 
-(** [update_screen state theme] draws the new board and score according to
-    [state] and [theme]. *)
 let update_screen (state : Board.t) (theme: color_theme) highscore : unit = 
   begin
     clear_graph ();
@@ -209,6 +204,8 @@ let draw_powerup powerup rect_y =
   moveto (size_x()/2 + 70 - p_len/2 + 57)(rect_y-50-10);
   if powerup then draw_string "ON" else draw_string "OFF"
 
+(** [draw_help_button theme] creates a help button on the screen according to
+    the colors in [theme]. *)
 let draw_help_button theme = 
   set_color theme.twofiftysix;
   fill_rect (size_x()-90) (size_y() -50) 70 30;
@@ -217,6 +214,8 @@ let draw_help_button theme =
   moveto  (size_x()-55 - helpx/2) (size_y()-35 -helpy/2);
   draw_string "Help"
 
+(** [draw_home_buttom ()] draws an arrow on the screen to allow the user
+    to return to the start screen. *)
 let draw_home_button () =
   set_color blue;
   fill_poly [|(50, 410); (30, 420); (50, 430)|];
@@ -225,23 +224,23 @@ let draw_home_button () =
 let draw_help_screen () = 
   clear_graph ();
   set_color black;
-  center_text "How To Play" 400;
+  center_text "How To Play:" 400;
   center_text "The goal of this game is to reach the 2048 tile." 350;
   center_text "When two tiles of the same number touch, they merge into one." 
     325;
   center_text "Use the w, a, s, and d keys to move the tiles around" 300;
-  center_text "There are powerups you can toggle to help and hinder your game:"
+  center_text "There are powerups you can toggle to help and hinder your game"
     250;
-  center_text " - Double: Doubles the number of every tile" 225;
-  center_text " - Half: Halves the number of every tile except 2" 200;
-  center_text " - Sort: Sorts the tiles in each row" 175;
-  center_text " - Shuffle: Shuffles the tiles randomly" 150;
-  center_text " - Remove: Removes a random tile from the board" 125;
-  center_text "Good Luck Playing!" 100;
+  center_text "You must swipe over them to obtain them. Here is a list: "
+    225;
+  center_text "- Double: Doubles the number of every tile" 200;
+  center_text "- Half: Halves the number of every tile except 2" 185;
+  center_text "- Sort: Sorts the tiles in each row" 170;
+  center_text "- Shuffle: Shuffles the tiles randomly" 155;
+  center_text "- Remove: Removes a random tile from the board" 140;
+  center_text "Good Luck Playing!" 115;
   draw_home_button()
 
-(** [start_screen theme powerup] displays a "click to start game" screen
-    and allows the user to change [theme] and toggle [powerup]. *)
 let start_screen (theme:color_theme) (powerup:bool) : unit =
   open_graph "";
   draw_start_message theme;
@@ -269,8 +268,6 @@ let draw_play_again button_length button_height =
   moveto (250 + (size_x()/2 - play_length/2)) (size_y()/2 - play_height/2); 
   draw_string "Play Again"
 
-(** [lose_screen state theme] draws the lose message on the screen with the
-    losing board according to [state] and [theme]. *)
 let lose_screen (state: Board.t) theme : unit =
   let button_length = 80 in
   let button_height = 40 in
@@ -310,14 +307,10 @@ let draw_theme_tile x y height c1 c2 c3 c4 =
   set_color c4;
   fill_rect x (y+(3*height/4)) height (height/4)
 
-(** [theme_screen ()] draws the theme selection screen. *)
-let theme_screen () : unit = 
-  clear_graph();
-  set_color black;
-  center_text "Click on a tile to choose a color theme!" 370;
-  let button_height = 100 in
-  let padding = 40 in
-  (* blue theme *)
+(** [draw_blue_theme_tile] draws the button to be pressed for when a player
+    wants to change the theme to "The Cloud" theme. This function creates the 
+    button and displays the name of the theme underneath the button.*) 
+let draw_blue_theme_tile button_height padding =
   draw_theme_tile 
     (size_x()/2-button_height/2) (size_y()/2+padding/2) button_height 
     (rgb 10 42 145) (rgb 4 114 173) (rgb 75 173 234) (rgb 178 222 251);
@@ -325,9 +318,12 @@ let theme_screen () : unit =
   let (bluex, bluey) = text_size blue_name in
   moveto (size_x()/2 - bluex/2) (size_y()/2+padding/2 - 20);
   set_color black;
-  draw_string blue_name;
+  draw_string blue_name
 
-  (* default theme *)
+(** [draw_default_theme_tile] draws the button to be pressed for when a player
+    wants to change the theme to the "default" theme. This function creates the 
+    button and displays the name of the theme underneath the button.*) 
+let draw_default_theme_tile button_height padding = 
   draw_theme_tile 
     (size_x()/2-button_height-padding-button_height/2) (size_y()/2+padding/2)
     button_height 
@@ -336,9 +332,13 @@ let theme_screen () : unit =
   let (defx, defy) = text_size default_name in
   moveto (size_x()/2-button_height-padding-defx/2) (size_y()/2+padding/2 - 20);
   set_color black;
-  draw_string default_name;
+  draw_string default_name
 
-  (* pastel theme *)
+(** [draw_pastel_theme_tile] draws the button to be pressed for when a player
+    wants to change the theme to "Copy and Patel" theme. This function 
+    creates the button and displays the name of the theme underneath the 
+    button.*) 
+let draw_pastel_theme_tile button_height padding = 
   draw_theme_tile 
     (size_x()/2+padding+button_height/2) (size_y()/2 + padding/2) button_height 
     (rgb 225 255 144) (rgb 255 185 198) (rgb 186 245 244) (rgb 255 254 184);
@@ -347,9 +347,13 @@ let theme_screen () : unit =
   moveto (size_x()/2+padding+2*button_height/2-pasx/2)
     (size_y()/2+padding/2-20);
   set_color black;
-  draw_string pastel_name;
+  draw_string pastel_name
 
-  (* dark mode theme *)
+(** [draw_dark_theme_tile] draws the button to be pressed for when a player
+    wants to change the theme to the "dark mode" theme. This function 
+    creates the button and displays the name of the theme underneath the 
+    button.*) 
+let draw_dark_theme_tile button_height padding = 
   draw_theme_tile 
     (size_x()/2-button_height/2) (size_y()/2-padding/2-button_height)
     button_height (rgb 2 143 163) (rgb 98 93 82) (rgb 34 34 34) (rgb 97 97 97);
@@ -357,9 +361,13 @@ let theme_screen () : unit =
   let (darkx, darky) = text_size dark_name in
   moveto (size_x()/2-darkx/2) (size_y()/2-padding/2-button_height - 20);
   set_color black;
-  draw_string dark_name;
+  draw_string dark_name
 
-  (* rainbow theme *)
+(** [draw_rainbow_theme_tile] draws the button to be pressed for when a player
+    wants to change the theme to the "rainbow" theme. This function 
+    creates the button and displays the name of the theme underneath the 
+    button.*) 
+let draw_rainbow_theme_tile button_height padding = 
   draw_theme_tile 
     (size_x()/2-button_height-padding-button_height/2) 
     (size_y()/2-padding/2-button_height) button_height 
@@ -369,9 +377,13 @@ let theme_screen () : unit =
   moveto (size_x()/2-button_height-padding-rainx/2)
     (size_y()/2-padding/2-button_height -20);
   set_color black;
-  draw_string rainbow_name;
+  draw_string rainbow_name
 
-  (* 3110 theme? *)
+(** [draw_hard_theme_tile] draws the button to be pressed for when a player
+    wants to change the theme to the "challenge" theme. This function 
+    creates the button and displays the name of the theme underneath the 
+    button.*) 
+let draw_hard_theme_tile button_height padding = 
   draw_theme_tile 
     (size_x()/2+padding+button_height/2) (size_y()/2 - padding/2-button_height)
     button_height black black black black;
@@ -381,6 +393,21 @@ let theme_screen () : unit =
     (size_y()/2 - padding/2-button_height -20);
   set_color black;
   draw_string hard_name
+
+let theme_screen () : unit = 
+  clear_graph();
+  set_color black;
+  center_text "Click on a tile to choose a color theme!" 370;
+  let button_height = 100 in
+  let padding = 40 in
+
+  draw_blue_theme_tile button_height padding;
+  draw_default_theme_tile button_height padding;
+  draw_pastel_theme_tile button_height padding;
+  draw_dark_theme_tile button_height padding;
+  draw_rainbow_theme_tile button_height padding;
+  draw_hard_theme_tile button_height padding
+
 
 
 

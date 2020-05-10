@@ -1,5 +1,6 @@
 open Board
 open Powerup
+
 type command =
   | Left
   | Right
@@ -55,6 +56,8 @@ let combine_left_board list n acc  =
 let combine_right_board list n acc = 
   combine_left_board (List.rev list) n acc |> List.rev
 
+(** [obtained_powerup_left row] is the powerup in [row] if it exists and can
+    be obtained with a left movement. *)
 let obtained_powerup_left row = 
   let filtered_row = List.filter (fun x -> x <> 0) row in
   match List.find_opt (fun x -> x mod 2 <> 0) filtered_row with 
@@ -66,15 +69,21 @@ let obtained_powerup_left row =
     in helper filtered_row
   | None -> 0
 
+(** [obtained_powerup_right row] is the powerup in [row] if it exists and can
+    be obtained with a right movement. *)
 let obtained_powerup_right row = 
   obtained_powerup_left (List.rev row)
 
+(** [get_powerup_left board] is the powerup in [board] if it exists and can
+    be obtained with a left movement. *)
 let get_powerup_left board =
   let powerup_list = List.map (fun row -> obtained_powerup_left row) board in 
   match List.find_opt (fun x -> x <> 0) powerup_list with 
   | Some x -> x
   | None -> 0
 
+(** [get_powerup_right board] is the powerup in [board] if it exists and can
+    be obtained with a right movement. *)
 let get_powerup_right board =
   let powerup_list = List.map (fun row -> obtained_powerup_right row) board in 
   match List.find_opt (fun x -> x <> 0) powerup_list with 

@@ -1,18 +1,26 @@
 INSTALL INSTRUCTIONS
 
-This source code is compatible with and has been tested with Mac computers.
+This source code is compatible with and has been tested *only* with Mac computers.
 
 To install OCaml Graphics,
 
-1. In terminal, run "opam install graphics"
+1. In terminal, run "opam install graphics" and install any necessary 
+dependencies.
 
 2. If graphics is still not being installed, download homebrew and 
   run "brew install graphics" in terminal.
 
-3. If running the source code still does not work when run in terminal,
-  download XQuartz from https://www.xquartz.org/releases/index.html 
+3. Download XQuartz from https://www.xquartz.org/releases/index.html 
 
-4. Run the source code in terminal.
+4. In the XQuartz terminal, run "opam install graphics"
 
-5. If running the source code still does not work, run the source code 
-  in the XQuartz terminal. 
+5. Run the source code in terminal with "make play" to play the game, 
+"make test" to test it, and "make docs" to create documentations.
+
+6. If running the source code still does not work in terminal, do step 5 in 
+the XQuartz terminal.
+
+***Disclaimer: These were the only debugging steps that we went through to get
+the graphics to work on our computers. If it does not work, then we suggest
+trying on a computer that already has the OCaml Graphics library installed.
+Sorry, we don't know what we're doing :(
