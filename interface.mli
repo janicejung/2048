@@ -1,3 +1,4 @@
+(** Creation of the graphical user interface. *)
 
 (** [color_theme] is the color schedule for the GUI. *)
 type color_theme = {

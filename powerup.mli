@@ -1,3 +1,5 @@
+(** The representation of powerups in the game and the functions to activate
+    them. *)
 
 (** [t] is the type for a powerup. *)
 type t =

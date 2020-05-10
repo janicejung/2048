@@ -1,3 +1,5 @@
+(** The representation of the board in the game and the functions associated
+    with it. *)
 
 (** [t] is a representation of the game board, current score, and the number
     of moves a user has made. *)

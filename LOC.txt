@@ -1,0 +1,4 @@
+When running cloc . on our whole project, we get 949 lines of code.
+
+After accounting for the functions that are no longer used in our game,
+but only for testing, we will have 904 lines of code.

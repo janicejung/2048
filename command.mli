@@ -1,3 +1,4 @@
+(** The functions associated with moving the board around. *)
 
 (** [command] is the type for a movement on the board. *)
 type command =
