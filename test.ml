@@ -60,12 +60,18 @@ let test = [
   "test_get_empty_tiles" >:: (fun _ -> 
       assert_equal 
         (get_empty_tiles 3 [[5;0;10];[0;0;0];[0;1;0]]) [[1];[0;1;2];[0;2]];);
+  "test_get_empty_tiles" >:: (fun _ -> 
+      assert_equal 
+        (get_empty_tiles 4 [[5;0;10;0];[0;0;0;2];[1;1;1;1]]) 
+        [[1;3];[0;1;2];[]];);
 
   (* place_num_in_row tests*)
   "test_place_num_in_row" >:: (fun _ -> 
       assert_equal (place_num_in_row [1;1] 1 2) [1;2];);
   "test_place_num_in_row" >:: (fun _ -> 
       assert_equal (place_num_in_row [1;1;2;3] 2 100) [1;1;100;3];);
+  "test_place_num_in_row" >:: (fun _ -> 
+      assert_equal (place_num_in_row [1;1;2;3] 0 100) [100;1;2;3];);
 
   (* have_lost_row tests*)
   "test_have_lost_row" >:: (fun _ -> 
@@ -94,7 +100,8 @@ let test = [
       assert_equal (have_lost [[1;2;3];[4;5;6];[7;8;9]]) true;);
   "test_have_lost" >:: (fun _ -> 
       assert_equal (have_lost [[1;2;3];[4;5;6];[7;8;0]]) false;);
-
+  "test_have_lost" >:: (fun _ -> 
+      assert_equal (have_lost [[2;4;8;4];[4;2;4;8];[2;4;8;2];[4;2;4;8]])true;);
 
   (* compare_board tests*)
   "test_compare_board1" >:: (fun _ -> 
@@ -158,6 +165,13 @@ let test = [
                        score = 0; moves = 0}) 
            {board = [[0;0;0;0];[0;0;0;0];[0;0;0;0];[0;0;0;0]]; 
             score = 0; moves = 0}));
+  "test_move_left3" >:: (fun _ -> 
+      assert_equal true 
+        (compare_state 
+           (move_left {board = [[4;2;8;16];[0;4;4;0];[2;2;2;2];[4;4;8;2]];
+                       score = 0; moves = 0})
+           {board = [[4;2;8;16];[8;0;0;0];[4;4;0;0];[8;8;2;0]]; 
+            score = 24; moves = 0}));
 
   (* move_right tests*)
   "test_move_right1" >:: (fun _ -> 
