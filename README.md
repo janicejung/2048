@@ -1,4 +1,3 @@
-# cs3110-project
-hello hi hehe
+#CS 3110 Final project: 2048
 
-chicken nugget
+This is a 
